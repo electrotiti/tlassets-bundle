@@ -18,6 +18,5 @@
     "autoload": {
         "psr-0": { "electrotiti\\TlAssetsBundle": "" }
     },
-    "target-dir": "electrotiti/TlAssetsBundle",
     "minimum-stability": "dev"
 }
