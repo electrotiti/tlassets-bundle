@@ -1,0 +1,23 @@
+{
+    "name": "electrotiti/tlassets-bundle",
+    "type": "symfony-bundle",
+    "description": "Symfony assets management with Gulp",
+    "keywords": ["Symfony", "assets", "gulp"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Thierry LESZKOWICZ",
+            "email": "electrotiti@gmail.com",
+            "homepage": "http://github.com/electrotiti/tlassets-bundle"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.3",
+        "symfony/framework-bundle": "2.5.*"
+    },
+    "autoload": {
+        "psr-0": { "electrotiti\\TlAssetsBundle": "" }
+    },
+    "target-dir": "electrotiti/TlAssetsBundle",
+    "minimum-stability": "dev"
+}
