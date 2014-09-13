@@ -11,12 +11,11 @@
             "homepage": "http://github.com/electrotiti/tlassets-bundle"
         }
     ],
+    "autoload": {
+        "psr-4": {"": "src"}
+    },
     "require": {
         "php": ">=5.3.3",
         "symfony/framework-bundle": "2.5.*"
-    },
-    "autoload": {
-        "psr-0": { "electrotiti\\TlAssetsBundle": "" }
-    },
-    "minimum-stability": "dev"
+    }
 }
