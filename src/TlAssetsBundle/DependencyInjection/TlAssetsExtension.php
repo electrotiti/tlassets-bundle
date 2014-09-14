@@ -6,7 +6,6 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\Loader;
-use TlAssetsBundle\Extension\Twig\TlAssetsTokenParser;
 
 /**
  * This is the class that loads and manages your bundle configuration
@@ -27,6 +26,7 @@ class TlAssetsExtension extends Extension
         $loader->load('services.xml');
 
         $container->setParameter('tl_assets.debug', $config['debug']);
+        $container->setParameter('tl_assets.live_compilation', $config['live_compilation']);
 
         $defaultVal = $config['filters'];
         $filters = array();

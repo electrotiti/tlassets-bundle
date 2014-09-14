@@ -8,6 +8,7 @@ namespace TlAssetsBundle\Extension\Twig;
 
 use Symfony\Component\Finder\Finder;
 use TlAssetsBundle\Asset\TlAssetsCollection;
+use Symfony\Component\Process\Process;
 
 class TlAssetsManager
 {
@@ -17,12 +18,14 @@ class TlAssetsManager
     private $collection;
     private $defaultFilters;
     private $rootCacheDir;
+    private $liveCompilation;
 
-    public function __construct($rootDir, $rootCacheDir, $debug)
+    public function __construct($rootDir, $rootCacheDir, $debug, $liveCompilation)
     {
         $this->rootDir = str_replace('/app','',$rootDir);
         $this->debug   = $debug;
         $this->rootCacheDir = $rootCacheDir;
+        $this->liveCompilation = $liveCompilation;
     }
 
     public function setDefaultFilters($defaultFilters)
@@ -58,7 +61,10 @@ class TlAssetsManager
             }
         }
 
-        $this->saveBuffer();
+        $bufferFile = $this->saveBuffer();
+        if($this->liveCompilation) {
+            $this->compileAssets($bufferFile);
+        }
     }
 
     public function getTargetPath()
@@ -84,6 +90,19 @@ class TlAssetsManager
         echo "<pre>".print_r($export,true)."</pre>";
         $bufferFile = $dir.$this->collection->getName().'.json';
         file_put_contents($bufferFile,json_encode($export));
+        return $bufferFile;
+    }
+
+    public function compileAssets($bufferFile)
+    {
+        $gulpFolder = $this->rootDir.'/vendor/node_modules/tlassets-bundle/';
+
+        $process = new Process("cd $gulpFolder && ./node_modules/gulp/bin/gulp.js dump --buffer=$bufferFile");
+        $process->run();
+
+        if (!$process->isSuccessful()) {
+            throw new \RuntimeException($process->getErrorOutput());
+        }
     }
 
     private function _getFiles($folder)
