@@ -27,6 +27,7 @@ class TlAssetsExtension extends Extension
 
         $container->setParameter('tl_assets.debug', $config['debug']);
         $container->setParameter('tl_assets.live_compilation', $config['live_compilation']);
+//        $container->setParameter('tl_assets.bundles', $config['bundles']);
 
         $defaultVal = $config['filters'];
         $filters = array();

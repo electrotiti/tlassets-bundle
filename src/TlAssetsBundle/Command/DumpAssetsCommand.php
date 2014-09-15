@@ -12,9 +12,7 @@ namespace TlAssetsBundle\Command;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use TlAssetsBundle\Extension\Twig\TlAssetsExtension;
-use TlAssetsBundle\Extension\Twig\TlAssetsManager;
-use TlAssetsBundle\Extension\Twig\TlAssetsTokenParser;
+use Symfony\Component\Finder\Finder;
 
 class DumpAssetsCommand extends ContainerAwareCommand
 {
@@ -28,32 +26,17 @@ class DumpAssetsCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $loader = new \Twig_Loader_Filesystem('/home/electro/www/tlmoney/src/Tlmoney/MainBundle/Resources/views/Default');
-        $twig = new \Twig_Environment($loader);
+        $twig = $this->getContainer()->get('twig');
 
-        $rootDir = $this->getContainer()->getParameter('kernel.root_dir');
-        $cacheDir = $this->getContainer()->getParameter('kernel.cache_dir');
+        $kernel = $this->getContainer()->get('kernel');
+        $path = $kernel->locateResource('@TlmoneyMainBundle');
+        $finder = new Finder();
+        $files = $finder->files()->in($path)->name('*.twig');
 
-
-        $manager = new TlAssetsManager($rootDir,$cacheDir,true,false);
-        $manager->setDefaultFilters(array('less'));
-        $tlAssetsExtension = new TlAssetsExtension($manager);
-
-        $twig->addExtension($tlAssetsExtension);
-        //$twig->render('index.html.twig');
-        $stream = $twig->tokenize('index.html.twig','index.html.twig');
-
-        $node = $stream->look();
-        var_dump($node);die;
-
-        $tokenParser = new TlAssetsTokenParser($manager,'');
-        $tokenParser->parse($node);
-
-
-//        $nodes = $twig->parse($stream);
-
-//        $php = $twig->compile($nodes);
-//        var_dump($php);
+        foreach($files as $file) {
+            $stream = $twig->tokenize($file->getContents());
+            $twig->parse($stream);
+        }
     }
 
 } 

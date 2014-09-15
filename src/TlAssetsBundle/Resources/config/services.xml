@@ -7,6 +7,7 @@
     <parameters>
         <parameter key="tl_assets.twig_extension.class">TlAssetsBundle\Extension\Twig\TlAssetsExtension</parameter>
         <parameter key="tl_assets.twig_manager.class">TlAssetsBundle\Extension\Twig\TlAssetsManager</parameter>
+        <parameter key="tl_assets.twig_dumper.class">TlAssetsBundle\Extension\Twig\TlAssetsDumper</parameter>
     </parameters>
 
     <services>
@@ -26,6 +27,13 @@
             <argument type="service" id="tl_assets.twig_manager"></argument>
             <tag name="twig.extension" />
         </service>
+
+
+        <!--<service id="tl_assets.twig_dumper" class="%tl_assets.twig_dumper.class%">-->
+            <!--<argument type="service" id="kernel"></argument>-->
+            <!--<argument type="service" id="twig"></argument>-->
+            <!--<argument>%tl_assets.bundles%</argument>-->
+        <!--</service>-->
 
     </services>
 
