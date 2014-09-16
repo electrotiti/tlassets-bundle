@@ -15,6 +15,7 @@
             <argument>%kernel.root_dir%</argument>
             <argument>%kernel.cache_dir%</argument>
             <argument>%tl_assets.debug%</argument>
+            <argument>%tl_assets.use_cache%</argument>
             <argument>%tl_assets.live_compilation%</argument>
 
             <call method="setDefaultFilters">

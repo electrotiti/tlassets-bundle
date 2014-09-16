@@ -82,7 +82,7 @@ var compileAssets = function(assets)
 
 gulp.task('dump', function () {
     checkArgv();
-    gulp.src(argv.buffer).pipe(tap(function(file, t){
+    gulp.src(argv.buffer + '*.json').pipe(tap(function(file, t){
         var assets =  JSON.parse(file.contents.toString());
         compileAssets(assets);
     }));

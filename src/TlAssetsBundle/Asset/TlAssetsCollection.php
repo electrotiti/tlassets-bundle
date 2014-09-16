@@ -93,7 +93,11 @@ class TlAssetsCollection
                 break;
         }
 
-        $export = array_merge(array('name'=>$this->getName(), 'files'=>$files,'concatDest'=>$contactDest,'type'=>$type, 'rootWebPath'=>$rootWebPath), $this->attributes);
+        $export = array_merge(array('name'=>$this->getName(),
+                                    'files'=>$files,
+                                    'concatDest'=>$contactDest,
+                                    'type'=>$type,
+                                    'rootWebPath'=>$rootWebPath), $this->attributes);
 
         return $export;
     }

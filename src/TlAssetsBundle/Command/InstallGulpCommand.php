@@ -23,7 +23,7 @@ class InstallGulpCommand extends ContainerAwareCommand
         $root = $this->getContainer()->get('kernel')->getRootDir()."/../";
         $gulpFolder = $root.'vendor/electrotiti/tlassets-bundle/src/TlAssetsBundle/Compiler/Gulp/';
 
-        $process = new Process('npm install '.$gulpFolder.' --prefix ./vendor/node_modules');
+        $process = new Process('cd '.$root.' && npm install '.$gulpFolder.' --prefix ./vendor/node_modules');
         $process->run(function ($type, $buffer) use ($output) {
             $output->writeln($buffer);
         });

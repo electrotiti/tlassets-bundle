@@ -13,6 +13,8 @@ use Symfony\Component\Process\Process;
 class TlAssetsManager
 {
 
+    const BUFFER_FOLDER = '/tlassets/buffer/';
+
     private $rootDir;
     private $debug;
     private $collection;
@@ -20,12 +22,13 @@ class TlAssetsManager
     private $rootCacheDir;
     private $liveCompilation;
 
-    public function __construct($rootDir, $rootCacheDir, $debug, $liveCompilation)
+    public function __construct($rootDir, $rootCacheDir, $debug, $useCache, $liveCompilation)
     {
         $this->rootDir = str_replace('/app','',$rootDir);
         $this->debug   = $debug;
         $this->rootCacheDir = $rootCacheDir;
         $this->liveCompilation = $liveCompilation;
+        $this->useCache = $useCache;
     }
 
     public function setDefaultFilters($defaultFilters)
@@ -70,7 +73,19 @@ class TlAssetsManager
     public function getTargetPath()
     {
         $targetPath = array();
-        $export = $this->collection->exportBufferData();
+
+        if($this->useCache) {
+            $bufferDir = $this->rootCacheDir.self::BUFFER_FOLDER;
+            $collectionName = $this->collection->getName();
+
+            if(!file_exists($bufferDir.$collectionName.'.json')) {
+                $export = $this->collection->exportBufferData();
+            } else {
+                $export = json_decode(file_get_contents($bufferDir.$collectionName.'.json'),true);
+            }
+        } else {
+            $export = $this->collection->exportBufferData();
+        }
 
         foreach($export['files'] as $file) {
             $targetPath[] =  $file['dest'];
@@ -81,7 +96,7 @@ class TlAssetsManager
 
     public function saveBuffer()
     {
-        $dir = $this->rootCacheDir.'/tlassets/buffer/';
+        $dir = $this->rootCacheDir.self::BUFFER_FOLDER;
         if(!file_exists($dir)) {
             mkdir($dir,0770, true);
         }
