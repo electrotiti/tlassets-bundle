@@ -81,13 +81,13 @@ class TlAssetsManager
 
     public function saveBuffer()
     {
-        $dir = $this->rootCacheDir.'/tlassets/';
+        $dir = $this->rootCacheDir.'/tlassets/buffer/';
         if(!file_exists($dir)) {
             mkdir($dir,0770, true);
         }
 
         $export = $this->collection->exportBufferData($this->_getWebPath());
-        echo "<pre>".print_r($export,true)."</pre>";
+        //echo "<pre>".print_r($export,true)."</pre>";
         $bufferFile = $dir.$this->collection->getName().'.json';
         file_put_contents($bufferFile,json_encode($export));
         return $bufferFile;

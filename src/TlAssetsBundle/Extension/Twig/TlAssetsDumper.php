@@ -23,7 +23,7 @@ class TlAssetsDumper
         $finder = new Finder();
 
         foreach($this->bundles as $bundle) {
-            $pathToBundle = $this->kernel->locateResource($bundle);
+            $pathToBundle = $this->kernel->locateResource('@'.$bundle);
             $files = $finder->files()->in($pathToBundle)->name('*.twig');
 
             foreach($files as $file) {

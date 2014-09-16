@@ -21,18 +21,21 @@ class Configuration implements ConfigurationInterface
         $rootNode = $treeBuilder->root('tl_assets');
 
         $rootNode->children()
-                    ->booleanNode('debug')
-                    ->defaultValue('%kernel.debug%')
-                 ->end()
-                    ->booleanNode('live_compilation')
-                    ->defaultValue(false)
-                ->end()
+                    ->booleanNode('debug')->defaultValue('%kernel.debug%')->end()
+                    ->booleanNode('live_compilation')->defaultValue(false)->end()
+
+                    ->arrayNode('bundles')
+                        ->prototype('scalar')->end()
+                    ->end()
+
                     ->arrayNode('filters')
                         ->children()
                             ->booleanNode('hash')->end()
                             ->booleanNode('minify')->end()
                             ->booleanNode('concat')->end()
-                ->end();
+                        ->end()
+                    ->end()
+                   ->end();
 
         return $treeBuilder;
     }

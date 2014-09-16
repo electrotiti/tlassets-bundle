@@ -14,29 +14,20 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Finder\Finder;
 
-class DumpAssetsCommand extends ContainerAwareCommand
+class DumpCommand extends ContainerAwareCommand
 {
 
     protected function configure()
     {
         $this
             ->setName('tlassets:dump')
-            ->setDescription('Dump all assets');
+            ->setDescription('Dump buffer of assets for Gulp');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $twig = $this->getContainer()->get('twig');
-
-        $kernel = $this->getContainer()->get('kernel');
-        $path = $kernel->locateResource('@TlmoneyMainBundle');
-        $finder = new Finder();
-        $files = $finder->files()->in($path)->name('*.twig');
-
-        foreach($files as $file) {
-            $stream = $twig->tokenize($file->getContents());
-            $twig->parse($stream);
-        }
+        $dumper = $this->getContainer()->get('tl_assets.twig_dumper');
+        $dumper->dumpBufferInCache();
     }
 
 } 

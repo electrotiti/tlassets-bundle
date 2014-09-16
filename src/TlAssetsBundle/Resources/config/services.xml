@@ -29,11 +29,11 @@
         </service>
 
 
-        <!--<service id="tl_assets.twig_dumper" class="%tl_assets.twig_dumper.class%">-->
-            <!--<argument type="service" id="kernel"></argument>-->
-            <!--<argument type="service" id="twig"></argument>-->
-            <!--<argument>%tl_assets.bundles%</argument>-->
-        <!--</service>-->
+        <service id="tl_assets.twig_dumper" class="%tl_assets.twig_dumper.class%">
+            <argument type="service" id="kernel"></argument>
+            <argument type="service" id="twig"></argument>
+            <argument>%tl_assets.bundles%</argument>
+        </service>
 
     </services>
 
