@@ -5,10 +5,7 @@ Dump assets using Node JS and Gulp on Symfony2 project
 
 __WARNING: This bundle is on development, do not use on production.__
 
-## Intro
-This bundle is developed to manage your assets (JS and CSS for the moment), using Gulp on a Symfony project. 
-
-### Prerequisites (Unix only):
+### Prerequisites
    * Node JS 
    * NPM 
 
@@ -21,7 +18,7 @@ php app/console tlassets:gulp:install
 ````
 ## Tags Twig
 
-Below an example of Tags :
+Below an example of Tags that you can use in your Twig
 
 ```` Twig
 {% style "@MyCustomBundle/Resources/public/less/" filter="less" %}
@@ -34,21 +31,24 @@ Below an example of Tags :
 
 ````
 
-## Dump your assets
+## Generate your assets
 
-Install your assets:
+#### Install your assets:
 
 ````
 php app/console assets:install
 ````
+_This command copy your assets from SRC to on web/bundles/_
 
-Dump tlassets buffer on cache/ for GULP
+
+#### Dump tlassets buffer on cache/ for GULP
 ````
 php app/console tlassets:dump
 ````
+_This command parse your Twig and create a JSON file on the cache directory that will be used by GULP_
 
-Compile assets based on Gulp buffer
+#### Compile assets based on Gulp buffer
 ````
 php app/console tlassets:dump
 ````
-
+_This command retrieves all file buffer and compile the final files_
