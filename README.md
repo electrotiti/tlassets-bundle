@@ -3,6 +3,8 @@ tlassets-bundle
 
 Dump assets using Node JS and Gulp on Symfony2 project
 
+__WARNING: This bundle is on development, do not use on production.__
+
 ## Intro
 This bundle is developed to manage your assets (JS and CSS for the moment), using Gulp on a Symfony project. 
 
