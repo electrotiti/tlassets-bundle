@@ -26,8 +26,8 @@ class DumpCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $dumper = $this->getContainer()->get('tl_assets.twig_dumper');
-        $dumper->dumpBufferInCache();
+        $dumper = $this->getContainer()->get('tl_assets.twig_compiler');
+        $dumper->dumpBuffer();
     }
 
 } 
