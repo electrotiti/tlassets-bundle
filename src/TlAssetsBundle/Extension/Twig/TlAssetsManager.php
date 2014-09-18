@@ -51,9 +51,20 @@ class TlAssetsManager
                 $path = $webPath.$input;
             }
 
-            // TODO Correct error if path ending by "*.xx"
+            if(substr($path,-1) == '*') {
+                $path = substr($path,0, strlen($path)-1);
+            }
+
+            $filter = false;
+            $tmp = explode('*',$path);
+            if(count($tmp) == 2) {
+                $filter = '*'.$tmp[1];
+                $path = $tmp[0];
+            }
+
             if(is_dir($path)) {
-                foreach($this->_getFiles($path) as $realPath) {
+                $files = $this->_getFiles($path, $filter);
+                foreach($files as $realPath) {
                     $this->collection->createAssets($realPath);
                 }
             } else {
@@ -120,15 +131,8 @@ class TlAssetsManager
         }
     }
 
-    private function _getFiles($folder)
+    private function _getFiles($folder, $filter = false)
     {
-        $filter = false;
-
-        $tmp = explode('*',$folder);
-        if(count($tmp) == 2) {
-            $filter = '*'.$tmp[1];
-            $folder = $tmp[0];
-        }
 
         $finder = new Finder();
         $finder->files()->in($folder);
