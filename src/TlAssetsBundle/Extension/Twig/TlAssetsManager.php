@@ -21,14 +21,17 @@ class TlAssetsManager
     private $defaultFilters;
     private $rootCacheDir;
     private $liveCompilation;
+    private $compilerManager;
+    private $variables;
 
-    public function __construct($rootDir, $rootCacheDir, $debug, $useCache, $liveCompilation)
+    public function __construct($rootDir, $rootCacheDir, $debug, $useCache, $liveCompilation, $variables)
     {
         $this->rootDir = str_replace('/app','',$rootDir);
-        $this->debug   = $debug;
         $this->rootCacheDir = $rootCacheDir;
-        $this->liveCompilation = $liveCompilation;
+        $this->debug   = $debug;
         $this->useCache = $useCache;
+        $this->liveCompilation = $liveCompilation;
+        $this->variables = $variables;
     }
 
     public function setDefaultFilters($defaultFilters)
@@ -36,6 +39,10 @@ class TlAssetsManager
         $this->defaultFilters = $defaultFilters;
     }
 
+    public function setCompilerManager($compilerManager)
+    {
+        $this->compilerManager = $compilerManager;
+    }
 
     public function load($inputs, $attributes, $tag)
     {
@@ -75,9 +82,10 @@ class TlAssetsManager
             }
         }
 
-        $bufferFile = $this->saveBuffer();
+        $this->saveBuffer();
+
         if($this->liveCompilation) {
-            $this->compileAssets($bufferFile);
+            $this->compilerManager->compileAssets($this->collection->getName().'.json');
         }
     }
 
@@ -116,30 +124,16 @@ class TlAssetsManager
         //echo "<pre>".print_r($export,true)."</pre>";
         $bufferFile = $dir.$this->collection->getName().'.json';
         file_put_contents($bufferFile,json_encode($export));
-        return $bufferFile;
-    }
-
-    public function compileAssets($bufferFile)
-    {
-        $gulpFolder = $this->rootDir.'/vendor/node_modules/tlassets-bundle/';
-
-        $process = new Process("cd $gulpFolder && ./node_modules/gulp/bin/gulp.js dump --buffer=$bufferFile");
-        $process->run();
-
-        if (!$process->isSuccessful()) {
-            throw new \RuntimeException($process->getErrorOutput());
-        }
     }
 
     private function _getFiles($folder, $filter = false)
     {
 
         $finder = new Finder();
-        $finder->files()->in($folder);
+        $finder->files()->in($folder)->depth('== 0');
         if(false !== $filter) {
             $finder->name($filter);
         }
-
         foreach($finder as $file) {
             $files[] = $file->getRealpath();
         }
@@ -168,7 +162,14 @@ class TlAssetsManager
             }
         }
         $tmp = array_map("strtolower",$tmp);
-        return '/bundles/'.implode('/',$tmp);
+        $path ='/bundles/'.implode('/',$tmp);
+
+        foreach($this->variables as $key=>$var)
+        {
+            $path = str_replace('{'.$key.'}',$var, $path);
+        }
+
+        return $path;
     }
 
 }

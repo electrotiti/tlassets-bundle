@@ -3,50 +3,49 @@
 namespace TlAssetsBundle\Compiler;
 
 use Symfony\Component\Finder\Finder;
+use Symfony\Component\Process\Process;
 
 class CompilerManager
 {
 
     private $kernel;
-    private $environment;
     private $rootDir;
     private $cacheDir;
     private $debug;
-    private $bundles;
 
-    public function __construct($kernel, \Twig_Environment $environment, $rootDir, $cacheDir, $debug, $bundles)
+    public function __construct($kernel, $rootDir, $cacheDir, $debug)
     {
         $this->kernel = $kernel;
-        $this->environment = $environment;
         $this->rootDir = $rootDir;
         $this->cacheDir = $cacheDir;
         $this->debug = $debug;
-        $this->bundles = $bundles;
     }
 
-    public function dumpBuffer()
+    public function compileAssets($bufferFile = null, $output = null)
     {
-        $finder = new Finder();
+        $gulpFolder = $this->rootDir.'/../vendor/node_modules/tlassets-bundle/';
+        $buffer = $this->cacheDir.'/tlassets/buffer/'.($bufferFile != null ? $bufferFile : '');
+        $log = $this->cacheDir.'/tlassets/log/'.($bufferFile != null ? $bufferFile.'.log' : 'common.log');
 
-        foreach($this->bundles as $bundle) {
-            $pathToBundle = $this->kernel->locateResource('@'.$bundle);
-            $files = $finder->files()->in($pathToBundle)->name('*.twig');
-
-            foreach($files as $file) {
-                $stream = $this->environment->tokenize($file->getContents());
-                $this->environment->parse($stream);
-            }
+        if(!file_exists($this->cacheDir.'/tlassets/log/')) {
+            mkdir($this->cacheDir.'/tlassets/log/',0770, true);
         }
-    }
 
-    public function compileAssets($output)
-    {
-        $gulpFolder = $this->rootDir.'vendor/node_modules/tlassets-bundle/';
+        $command = 'cd '.$gulpFolder.' &&  ./node_modules/gulp/bin/gulp.js --buffer='.$buffer.' >> '.$log;
 
-        $process = new Process('cd '.$gulpFolder.' &&  ./node_modules/gulp/bin/gulp.js --buffer='.$this->cacheDir.'/tlassets/buffer/');
-        $process->run(function ($type, $buffer) use ($output) {
-                $output->writeln($buffer);
-            });
+        $process = new Process($command);
+
+        if($output != null) {
+            $process->run(function ($type, $buffer) use ($output) {
+                    $output->writeln($buffer);
+                });
+        }else {
+            $process->run();
+        }
+
+        if (!$process->isSuccessful()) {
+            throw new \RuntimeException($process->getErrorOutput());
+        }
     }
 
 }

@@ -20,15 +20,8 @@ class CompileCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $root = $this->getContainer()->getParameter('kernel.root_dir').'/../';
-        $cacheDir = $this->getContainer()->getParameter('kernel.cache_dir');
-
-        $gulpFolder = $root.'vendor/node_modules/tlassets-bundle/';
-
-        $process = new Process('cd '.$gulpFolder.' &&  ./node_modules/gulp/bin/gulp.js --buffer='.$cacheDir.'/tlassets/buffer/');
-        $process->run(function ($type, $buffer) use ($output) {
-                $output->writeln($buffer);
-            });
+        $compilerManager = $this->getContainer()->get('tl_assets.compiler');
+        $compilerManager->compileAssets(null, $output);
     }
 
 }

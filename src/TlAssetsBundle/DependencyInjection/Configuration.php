@@ -25,6 +25,10 @@ class Configuration implements ConfigurationInterface
                         ->prototype('scalar')->end()
                     ->end()
 
+                    ->arrayNode('variables')
+                        ->prototype('scalar')->end()
+                    ->end()
+
                     ->arrayNode('filters')
                         ->children()
                             ->booleanNode('hash')->end()

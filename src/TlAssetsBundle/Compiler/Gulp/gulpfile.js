@@ -23,10 +23,6 @@ var checkArgv = function()
 
 var compileAssets = function(assets)
 {
-    if(typeof argv.verbose != "undefined") {
-        gutil.log('Compile',assets.type, gutil.colors.green(assets.name),'=>', gutil.colors.red(assets.filters.join(' | ')));
-    }
-
     var needConcat = assets.filters.indexOf('concat') !== -1;
 
     var subCompile = function(assets, source, needConcat, dest)
@@ -54,7 +50,7 @@ var compileAssets = function(assets)
             )
             .pipe(needConcat ? concat(assets.concatDest) : rename(dest))
             .pipe(gulp.dest(assets.rootWebPath))
-            .pipe(typeof argv.debug != "undefined" ? debug() : gutil.noop())
+            .pipe(typeof argv.verbose != "undefined" ? debug() : gutil.noop())
             .pipe(typeof argv.verbose != "undefined" ?
                 tap(function(file,t){ gutil.log(gutil.colors.green('File created:'), file.path) }) :
                 gutil.noop()
@@ -82,7 +78,7 @@ var compileAssets = function(assets)
 
 gulp.task('dump', function () {
     checkArgv();
-    gulp.src(argv.buffer + '*.json').pipe(tap(function(file, t){
+    gulp.src(argv.buffer + (argv.buffer.substr(-5, 5) == '.json' ? '' : '*.json')).pipe(tap(function(file, t){
         var assets =  JSON.parse(file.contents.toString());
         compileAssets(assets);
     }));

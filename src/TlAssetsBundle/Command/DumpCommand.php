@@ -26,8 +26,19 @@ class DumpCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $dumper = $this->getContainer()->get('tl_assets.twig_compiler');
-        $dumper->dumpBuffer();
-    }
+        $twigEnv = $this->getContainer()->get('twig');
 
-} 
+        $bundles = $this->getContainer()->getParameter('tl_assets.bundles');
+        $finder = new Finder();
+
+        foreach($bundles as $bundle) {
+            $pathToBundle = $this->getContainer()->get('kernel')->locateResource('@'.$bundle);
+            $files = $finder->files()->in($pathToBundle)->name('*.twig');
+
+            foreach($files as $file) {
+                $stream = $twigEnv->tokenize($file->getContents());
+                $twigEnv->parse($stream);
+            }
+        }
+    }
+}
