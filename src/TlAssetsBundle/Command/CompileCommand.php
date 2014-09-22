@@ -15,7 +15,7 @@ class CompileCommand extends ContainerAwareCommand
     {
         $this
             ->setName('tlassets:compile')
-            ->setDescription('Compile assets based on Gulp buffer');
+            ->setDescription('Compile assets based on Gulp buffer created by the command tlassets:dump');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
