@@ -12,6 +12,7 @@ class CompilerManager
     private $rootDir;
     private $cacheDir;
     private $debug;
+    private $logger;
 
     public function __construct($kernel, $rootDir, $cacheDir, $debug)
     {
@@ -21,27 +22,36 @@ class CompilerManager
         $this->debug = $debug;
     }
 
-    public function compileAssets($bufferFile = null, $output = null)
+    public function setLogger($logger)
+    {
+        $this->logger = $logger;
+    }
+
+    public function compileAssets($bufferFilename = null, $callback = null)
     {
         $gulpFolder = $this->rootDir.'/../vendor/node_modules/tlassets-bundle/';
-        $buffer = $this->cacheDir.'/tlassets/buffer/'.($bufferFile != null ? $bufferFile : '');
-        $log = $this->cacheDir.'/tlassets/log/'.($bufferFile != null ? $bufferFile.'.log' : 'common.log');
+        $buffer = $this->cacheDir.'/tlassets/buffer/'.($bufferFilename != null ? $bufferFilename : '');
 
-        if(!file_exists($this->cacheDir.'/tlassets/log/')) {
-            mkdir($this->cacheDir.'/tlassets/log/',0770, true);
+        $command = 'cd '.$gulpFolder.' &&  ./node_modules/gulp/bin/gulp.js --buffer='.$buffer;
+        if($this->debug) {
+            $command .= ' --verbose';
         }
-
-        $command = 'cd '.$gulpFolder.' &&  ./node_modules/gulp/bin/gulp.js --buffer='.$buffer.' >> '.$log;
 
         $process = new Process($command);
 
-        if($output != null) {
-            $process->run(function ($type, $buffer) use ($output) {
-                    $output->writeln($buffer);
-                });
-        }else {
-            $process->run();
+        if($callback == null && $this->debug) {
+            $logger = $this->logger;
+            $callback = function($type, $output) use($logger){
+                if(Process::ERR === $type) {
+                    $logger->error('[Tlassets] '.$output);
+                } else {
+                    $logger->debug('[Tlassets] '.$output);
+                }
+            };
         }
+
+        $process->run($callback);
+
 
         if (!$process->isSuccessful()) {
             throw new \RuntimeException($process->getErrorOutput());

@@ -21,7 +21,16 @@ class CompileCommand extends ContainerAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $compilerManager = $this->getContainer()->get('tl_assets.compiler');
-        $compilerManager->compileAssets(null, $output);
+
+        $callback = function ($type, $buffer) use($output) {
+            if (Process::ERR === $type) {
+                $output->writeln('<error>'.$buffer.'</error>');
+            } else {
+                $output->writeln('<info>'.$buffer.'</info>');
+            }
+        };
+
+        $compilerManager->compileAssets(null, $callback);
     }
 
 }
