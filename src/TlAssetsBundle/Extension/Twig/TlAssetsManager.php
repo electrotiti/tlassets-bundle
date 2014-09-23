@@ -14,6 +14,7 @@ class TlAssetsManager
 {
 
     const BUFFER_FOLDER = '/tlassets/buffer/';
+    const WEB_FOLDER = '/web';
 
     private $rootDir;
     private $debug;
@@ -32,6 +33,10 @@ class TlAssetsManager
         $this->useCache = $useCache;
         $this->liveCompilation = $liveCompilation;
         $this->variables = $variables;
+        
+        $this->webPath = $this->rootDir.self::WEB_FOLDER;
+        $this->bufferFolder = $this->rootCacheDir.self::BUFFER_FOLDER;
+        
     }
 
     public function setDefaultFilters($defaultFilters)
@@ -50,18 +55,19 @@ class TlAssetsManager
 
         $this->collection = new TlAssetsCollection($inputs, $attributes, $tag);
 
-        $webPath = $this->_getWebPath();
         foreach($inputs as $input) {
             if("@" == $input[0]) {
-                $path = $webPath.$this->_getWebPathByReference($input);
+                $path = $this->webPath.$this->_getWebPathByReference($input);
             } else {
-                $path = $webPath.$input;
+                $path = $this->webPath.("/" != $input[0] ? '/'  :'').$input;
             }
 
+            // Remove "*" if it's the last caractere
             if(substr($path,-1) == '*') {
                 $path = substr($path,0, strlen($path)-1);
             }
 
+            // Separate filter and path if path have something like this "/my/path/*.xx" where "xx" is a file extension
             $filter = false;
             $tmp = explode('*',$path);
             if(count($tmp) == 2) {
@@ -69,21 +75,26 @@ class TlAssetsManager
                 $path = $tmp[0];
             }
 
+            // Replace variables in path
+            $path = $this->_replaceVariables($path);
+
             if(is_dir($path)) {
                 $files = $this->_getFiles($path, $filter);
                 foreach($files as $realPath) {
                     $this->collection->createAssets($realPath);
                 }
             } else {
-                if(false === file_exists($webPath.$input)) {
-                    throw new \Exception('Unable to find file : '.$webPath.$input);
+                if(false === file_exists($this->webPath.$input)) {
+                    throw new \Exception('Unable to find file : '.$this->webPath.$input);
                 }
-                $this->collection->createAssets($webPath.$input);
+                $this->collection->createAssets($this->webPath.$input);
             }
         }
 
+        // Save buffer file in cache
         $this->saveBuffer();
 
+        // Compile assets if live compilation is enable
         if($this->liveCompilation) {
             $this->compilerManager->compileAssets($this->collection->getName().'.json');
         }
@@ -94,13 +105,18 @@ class TlAssetsManager
         $targetPath = array();
 
         if($this->useCache) {
-            $bufferDir = $this->rootCacheDir.self::BUFFER_FOLDER;
             $collectionName = $this->collection->getName();
+            $bufferFile = $this->bufferFolder.$collectionName.'.json';
 
-            if(!file_exists($bufferDir.$collectionName.'.json')) {
+            if(!file_exists($bufferFile)) {
                 $export = $this->collection->exportBufferData();
             } else {
-                $export = json_decode(file_get_contents($bufferDir.$collectionName.'.json'),true);
+                $content = @file_get_contents($bufferFile);
+                if($content !== false) {
+                    $export = json_decode($content,true);
+                } else {
+                    throw new \Exception('Unable to get content of buffer file : '.$bufferFile);
+                }
             }
         } else {
             $export = $this->collection->exportBufferData();
@@ -115,15 +131,16 @@ class TlAssetsManager
 
     public function saveBuffer()
     {
-        $dir = $this->rootCacheDir.self::BUFFER_FOLDER;
-        if(!file_exists($dir)) {
-            mkdir($dir,0770, true);
+        if(!file_exists($this->bufferFolder)) {
+            mkdir($this->bufferFolder,0770, true);
         }
 
-        $export = $this->collection->exportBufferData($this->_getWebPath());
+        $export = $this->collection->exportBufferData($this->webPath);
         //echo "<pre>".print_r($export,true)."</pre>";
-        $bufferFile = $dir.$this->collection->getName().'.json';
-        file_put_contents($bufferFile,json_encode($export));
+        $bufferFile = $this->bufferFolder.$this->collection->getName().'.json';
+        if(false === file_put_contents($bufferFile,json_encode($export))) {
+            throw new \Exception('Unable to write buffer file : '.$bufferFile);
+        }
     }
 
     private function _getFiles($folder, $filter = false)
@@ -141,9 +158,14 @@ class TlAssetsManager
         return $files;
     }
 
-    private function _getWebPath()
+    private function _replaceVariables($path)
     {
-        return $this->rootDir.'/web';
+        foreach($this->variables as $key=>$var)
+        {
+            $path = str_replace('{'.$key.'}',$var, $path);
+        }
+
+        return $path;
     }
 
     /**
@@ -164,12 +186,6 @@ class TlAssetsManager
         $tmp = array_map("strtolower",$tmp);
         $path ='/bundles/'.implode('/',$tmp);
 
-        foreach($this->variables as $key=>$var)
-        {
-            $path = str_replace('{'.$key.'}',$var, $path);
-        }
-
         return $path;
     }
-
 }

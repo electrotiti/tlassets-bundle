@@ -13,9 +13,8 @@ class InstallGulpCommand extends ContainerAwareCommand
 
     protected function configure()
     {
-        $this
-            ->setName('tlassets:install:gulp')
-            ->setDescription('Install Gulp and his dependencies');
+        $this->setName('tlassets:install:gulp')
+             ->setDescription('Install Gulp and his dependencies');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -25,7 +24,11 @@ class InstallGulpCommand extends ContainerAwareCommand
 
         $process = new Process('cd '.$root.' && npm install '.$gulpFolder.' --prefix ./vendor/node_modules');
         $process->run(function ($type, $buffer) use ($output) {
-            $output->writeln($buffer);
+            if (Process::ERR === $type) {
+                $output->writeln('<error>'.$buffer.'</error>');
+            } else {
+                $output->writeln('<info>'.$buffer.'</info>');
+            }
         });
     }
 
