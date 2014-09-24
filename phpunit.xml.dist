@@ -1,0 +1,16 @@
+<phpunit bootstrap="./src/TlAssetsBundle/Tests/bootstrap.php" colors="true">
+    <testsuites>
+        <testsuite name="Tlassets test suite">
+            <directory suffix="Test.php">./src/TlAssetsBundle/Tests/</directory>
+        </testsuite>
+    </testsuites>
+
+    <filter>
+        <whitelist>
+            <directory suffix=".php">./src</directory>
+            <exclude>
+                <directory>./vendor</directory>
+            </exclude>
+        </whitelist>
+    </filter>
+</phpunit>
