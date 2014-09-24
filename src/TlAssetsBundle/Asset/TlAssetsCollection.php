@@ -14,9 +14,6 @@ use TlAssetsBundle\Extension\Twig\TlAssetsExtension;
 
 class TlAssetsCollection
 {
-
-    private $cssPreprocessor = array('less');
-
     private $inputs;
     private $attributes;
     private $tag;

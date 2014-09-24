@@ -49,6 +49,6 @@ _This command parse your Twig and create a JSON file on the cache directory that
 
 #### Compile assets based on Gulp buffer
 ````
-php app/console tlassets:dump
+php app/console tlassets:compile
 ````
-_This command retrieves all file buffer and compile the final files_
+_This command retrieves all file buffer and compile the final assets files_

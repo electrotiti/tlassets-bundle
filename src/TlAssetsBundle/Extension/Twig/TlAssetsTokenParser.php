@@ -1,15 +1,14 @@
 <?php
 
 namespace TlAssetsBundle\Extension\Twig;
-
-use TlAssetsBundle\Extension\Twig\TlAssetsNode;
+use TlAssetsBundle\Extension\Twig\TlAssetsManager;
 
 class TlAssetsTokenParser extends \Twig_TokenParser
 {
     private $tag;
     private $manager;
 
-    public function __construct($manager, $tag)
+    public function __construct(TlAssetsManager $manager, $tag)
     {
         $this->manager = $manager;
         $this->tag = $tag;
@@ -17,6 +16,7 @@ class TlAssetsTokenParser extends \Twig_TokenParser
 
     public function parse(\Twig_Token $token)
     {
+        $inputs = array();
         $attrs = array('filters'=>array(),
                         'options'=>array());
 
@@ -55,9 +55,9 @@ class TlAssetsTokenParser extends \Twig_TokenParser
         $stream->expect(\Twig_Token::BLOCK_END_TYPE);
         $content = $this->parser->subparse(array($this, 'testEndTag'), true);
         $stream->expect(\Twig_Token::BLOCK_END_TYPE);
-
+var_dump($inputs);
         $this->manager->load($inputs, $attrs, $this->getTag());
-        $params['assets'] = $this->manager->getTargetPath();
+        $params['assets'] = $this->manager->getAssetsPath();
         return new TlAssetsNode(array('content'=>$content), $params, $token->getLine(), $this->getTag());
     }
 

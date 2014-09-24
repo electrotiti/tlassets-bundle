@@ -54,49 +54,4 @@ class TlAssetsFile
     {
         return $this->realFilePath;
     }
-
-
-
-
-//    private function _buildDestinationPath()
-//    {
-//        // Get filter list from attributes
-//        $filters = array_key_exists('filter',$this->attributes) ? $this->attributes['filter'] : array();
-//
-//        // If is CSS compilation we will change some folder & $extension
-//        $isCssCompilation = 0 !== count(array_intersect($this->cssPreprocessor, $filters));
-//
-//
-//        // Build output folder
-//        if(array_key_exists('output',$this->attributes)) {
-//            $output = substr($this->attributes['output'],-1) !== "/" ? $this->attributes['output'].'/' : $this->attributes['output'];
-//        } else {
-//
-//            if($isCssCompilation) {
-//                $subFolder = 'css';
-//            } else {
-//                $tmp = explode('/',$this->realFilePath);
-//                $subFolder = $tmp[count($tmp) - 2];
-//            }
-//
-//            $output = '/public/'.$subFolder.'/';
-//        }
-//
-//        // Build final file extension
-//        $extension = $isCssCompilation ? 'css' : substr(strrchr($this->realFilePath, "."), 1);
-//
-//        // Add ".min", in filename if file will be minify
-//        if(in_array('minify',$filters)) {
-//            $extension = 'min.'.$extension;
-//        }
-//
-//        // Build filename
-//        $fileName = substr(strrchr($this->realFilePath, "/"), 1);
-//        $fileName = str_replace('.'.$extension,'',$fileName);
-//
-//        // Return final destination of file
-//        return $output.$this->collectionName.'_'.$fileName.'.'.$extension;
-//    }
-
-
 } 
