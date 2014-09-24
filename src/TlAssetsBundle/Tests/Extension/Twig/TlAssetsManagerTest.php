@@ -9,16 +9,35 @@ class TlAssetsManagerTest extends \PHPUnit_Framework_TestCase
     const TEST_DIR = './src/TlAssetsBundle/Tests';
 
 
-    public function testBuildBuffer()
+    public function dataProviderForBuildBuffer() {
+        return array(
+                array(
+                    array('/bundles/testbundle/js/'),
+                    array('filters'=>array()),
+                    'js',
+                    '1dea999'
+                ),
+                array(
+                    array('/bundles/testbundle/less/'),
+                    array('filters'=>array('less')),
+                    'style',
+                    'af06088'
+                )
+        );
+    }
+
+    /**
+     * @dataProvider dataProviderForBuildBuffer
+     */
+    public function testBuildBuffer($inputs, $attributes, $tag, $fileExpected)
     {
         $tlAssetsManager = new TlAssetsManager(self::TEST_DIR,self::TEST_DIR.'/cache/',false,false,false,array());
-        $tlAssetsManager->setDefaultFilters(array());
-        $tlAssetsManager->load(array('/bundles/testbundle/js/'), array('filters'=>array(),'options'=>array()),'js') ;
+        $tlAssetsManager->load($inputs, $attributes,$tag) ;
 
-        $this->assertFileExists(self::TEST_DIR.'/cache/tlassets/buffer/2d6ebd1.json');
+        $this->assertFileExists(self::TEST_DIR.'/cache/tlassets/buffer/'.$fileExpected.'.json');
 
-        $expected = file_get_contents(self::TEST_DIR.'/cache/tlassets/buffer/2d6ebd1.json');
-        $actual = file_get_contents(self::TEST_DIR.'/Extension/Twig/buffer/2d6ebd1.json');
+        $expected = file_get_contents(self::TEST_DIR.'/cache/tlassets/buffer/'.$fileExpected.'.json');
+        $actual = file_get_contents(self::TEST_DIR.'/Extension/Twig/buffer/'.$fileExpected.'.json');
 
         $this->assertEquals($expected, $actual);
     }

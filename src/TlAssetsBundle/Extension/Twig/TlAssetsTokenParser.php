@@ -17,8 +17,7 @@ class TlAssetsTokenParser extends \Twig_TokenParser
     public function parse(\Twig_Token $token)
     {
         $inputs = array();
-        $attrs = array('filters'=>array(),
-                        'options'=>array());
+        $attrs = array('filters'=>array());
 
         $stream = $this->parser->getStream();
         while (!$stream->test(\Twig_Token::BLOCK_END_TYPE)) {
@@ -29,23 +28,6 @@ class TlAssetsTokenParser extends \Twig_TokenParser
                 $stream->expect(\Twig_Token::OPERATOR_TYPE, '=');
                 $attrs['filters'] = array_merge($attrs['filters'], array_filter(array_map('trim', explode(',', $stream->expect(\Twig_Token::STRING_TYPE)->getValue()))));
             }
-//            elseif ($stream->test(\Twig_Token::NAME_TYPE, 'scope')) {
-//                $stream->next();
-//                $stream->expect(\Twig_Token::OPERATOR_TYPE, '=');
-//                $stream->expect(\Twig_Token::PUNCTUATION_TYPE, '[');
-//
-//                while ($stream->test(\Twig_Token::STRING_TYPE)) {
-//                    $attrs['options']['scope'][] = $stream->expect(\Twig_Token::STRING_TYPE)->getValue();
-//
-//                    if (!$stream->test(\Twig_Token::PUNCTUATION_TYPE, ',')) {
-//                        break;
-//                    }
-//
-//                    $stream->next();
-//                }
-//
-//                $stream->expect(\Twig_Token::PUNCTUATION_TYPE, ']');
-//            }
             else {
                 $token = $stream->getCurrent();
                 throw new \Twig_Error_Syntax(sprintf('Unexpected token "%s" of value "%s"', \Twig_Token::typeToEnglish($token->getType(), $token->getLine()), $token->getValue()), $token->getLine());
@@ -55,7 +37,7 @@ class TlAssetsTokenParser extends \Twig_TokenParser
         $stream->expect(\Twig_Token::BLOCK_END_TYPE);
         $content = $this->parser->subparse(array($this, 'testEndTag'), true);
         $stream->expect(\Twig_Token::BLOCK_END_TYPE);
-var_dump($inputs);
+
         $this->manager->load($inputs, $attrs, $this->getTag());
         $params['assets'] = $this->manager->getAssetsPath();
         return new TlAssetsNode(array('content'=>$content), $params, $token->getLine(), $this->getTag());

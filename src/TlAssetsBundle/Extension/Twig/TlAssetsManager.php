@@ -31,7 +31,7 @@ class TlAssetsManager
     private $liveCompilation;
     private $variables;
 
-    private $defaultFilters;
+    private $defaultFilters = array();
 
     private $compilerManager;
 
