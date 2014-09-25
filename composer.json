@@ -2,7 +2,7 @@
     "name": "electrotiti/tlassets-bundle",
     "type": "symfony-bundle",
     "description": "Symfony assets management with Gulp",
-    "keywords": ["Symfony", "assets", "gulp"],
+    "keywords": ["symfony", "assets", "gulp", "assetic", "twig"],
     "license": "MIT",
     "authors": [
         {

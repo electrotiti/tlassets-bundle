@@ -15,13 +15,38 @@ class TlAssetsManagerTest extends \PHPUnit_Framework_TestCase
                     array('/bundles/testbundle/js/'),
                     array('filters'=>array()),
                     'js',
-                    '1dea999'
+                    array('name'=>'1dea999',
+                          'files'=>array(array('src'=>getcwd().'/src/TlAssetsBundle/Tests/web/bundles/testbundle/js/main.js',
+                                               'dest'=>'/public/js/1dea999_part1_main.js')),
+                          'type'=>'javascript',
+                          'rootWebPath'=>'./src/TlAssetsBundle/Tests/web',
+                          'filters'=>array()
+                    )
                 ),
                 array(
                     array('/bundles/testbundle/less/'),
                     array('filters'=>array('less')),
                     'style',
-                    'af06088'
+                    array('name'=>'af06088',
+                          'files'=>array(array('src'=>getcwd().'/src/TlAssetsBundle/Tests/web/bundles/testbundle/less/style.less',
+                                               'dest'=>'/public/css/af06088_part1_style.css')),
+                          'type'=>'stylesheet',
+                          'rootWebPath'=>'./src/TlAssetsBundle/Tests/web',
+                          'filters'=>array('less')
+                    )
+                ),
+                array(
+                    array('/bundles/testbundle/less/'),
+                    array('filters'=>array('less','concat')),
+                    'style',
+                    array('name'=>'733207e',
+                        'files'=>array(array('src'=>getcwd().'/src/TlAssetsBundle/Tests/web/bundles/testbundle/less/style.less',
+                                             'dest'=>'/public/css/733207e_part1_style.css')),
+                        'type'=>'stylesheet',
+                        'concatDest'=>'/public/css/733207e.css',
+                        'rootWebPath'=>'./src/TlAssetsBundle/Tests/web',
+                        'filters'=>array('less','concat')
+                    )
                 )
         );
     }
@@ -29,24 +54,23 @@ class TlAssetsManagerTest extends \PHPUnit_Framework_TestCase
     /**
      * @dataProvider dataProviderForBuildBuffer
      */
-    public function testBuildBuffer($inputs, $attributes, $tag, $fileExpected)
+    public function testBuildBuffer($inputs, $attributes, $tag, $expected)
     {
         $tlAssetsManager = new TlAssetsManager(self::TEST_DIR,self::TEST_DIR.'/cache/',false,false,false,array());
         $tlAssetsManager->load($inputs, $attributes,$tag) ;
 
-        $this->assertFileExists(self::TEST_DIR.'/cache/tlassets/buffer/'.$fileExpected.'.json');
+        $this->assertFileExists(self::TEST_DIR.'/cache/tlassets/buffer/'.$expected['name'].'.json');
+        $actual = file_get_contents(self::TEST_DIR.'/cache/tlassets/buffer/'.$expected['name'].'.json');
+        $actualData = json_decode($actual,true);
 
-        $expected = file_get_contents(self::TEST_DIR.'/cache/tlassets/buffer/'.$fileExpected.'.json');
-        $actual = file_get_contents(self::TEST_DIR.'/Extension/Twig/buffer/'.$fileExpected.'.json');
-
-        $this->assertEquals($expected, $actual);
+        $this->assertEquals($expected, $actualData);
     }
 
     public function tearDown()
     {
-        if(file_exists(self::TEST_DIR.'/cache/')) {
-            $this->_remove(self::TEST_DIR.'/cache/');
-        }
+//        if(file_exists(self::TEST_DIR.'/cache/')) {
+//            $this->_remove(self::TEST_DIR.'/cache/');
+//        }
     }
 
     private function _remove($path)

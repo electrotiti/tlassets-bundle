@@ -1,9 +1,9 @@
 tlassets-bundle
 ===============
 
-Dump assets using Node JS and Gulp on Symfony2 project
+TlAssetsBundle is an alternative to Assetic, it build your assets using NodeJS, GULP and Twig on a Symfony2 project.
 
-__WARNING: This bundle is on development, do not use on production.__
+__WARNING: For this moment this bundle is under development, do not use on production.__
 
 ### Prerequisites
    * Node JS 
@@ -18,7 +18,7 @@ php app/console tlassets:gulp:install
 ````
 ## Tags Twig
 
-Below an example of Tags that you can use in your Twig
+Below an example of tags that you can use in your Twig
 
 ```` Twig
 {% style "@MyCustomBundle/Resources/public/less/" filter="less" %}
@@ -38,7 +38,7 @@ Below an example of Tags that you can use in your Twig
 ````
 php app/console assets:install
 ````
-_This command copy your assets from SRC to on web/bundles/_
+_This command (from Symfony), copy your assets from the folder : "src/" to the folder : "web/bundles/"_
 
 
 #### Dump tlassets buffer on cache/ for GULP

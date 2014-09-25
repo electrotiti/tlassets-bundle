@@ -73,29 +73,24 @@ class TlAssetsCollection
 
     public function exportBufferData($rootWebPath = '')
     {
+        $tagType = array(TlAssetsExtension::TAG_STYLESHEET=>'stylesheet',TlAssetsExtension::TAG_JAVASCRIPT=>'javascript');
+
         $files = array();
         foreach($this->assets as $asset) {
             $files[] = array('src'=>$asset->getRealFilePath(), 'dest'=>$this->_getOutput().$asset->getFilename());
         }
 
-        $contactDest = $this->_getOutput().$this->getName().($this->generateHash ? '_'.$this->getHash() : '').'.'.$this->_getExtension();
+        $attributes = array('name'=>$this->getName(),
+                            'files'=>$files,
+                            'type'=>$tagType[$this->tag],
+                            'rootWebPath'=>$rootWebPath);
 
-        switch($this->tag) {
-            case TlAssetsExtension::TAG_STYLESHEET :
-                $type = 'stylesheet';
-                break;
-
-            case TlAssetsExtension::TAG_JAVASCRIPT :
-                $type = 'javascript';
-                break;
+        if(in_array('concat',$this->filters)) {
+            $contactDest = $this->_getOutput().$this->getName().($this->generateHash ? '_'.$this->getHash() : '').'.'.$this->_getExtension();
+            $attributes['concatDest'] = $contactDest;
         }
 
-        $export = array_merge(array('name'=>$this->getName(),
-                                    'files'=>$files,
-                                    'concatDest'=>$contactDest,
-                                    'type'=>$type,
-                                    'rootWebPath'=>$rootWebPath), $this->attributes);
-
+        $export = array_merge($attributes, $this->attributes);
         return $export;
     }
 
