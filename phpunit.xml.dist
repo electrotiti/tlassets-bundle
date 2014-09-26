@@ -1,9 +1,14 @@
 <phpunit bootstrap="./src/TlAssetsBundle/Tests/bootstrap.php" colors="true">
+
     <testsuites>
         <testsuite name="Tlassets test suite">
             <directory suffix="Test.php">./src/TlAssetsBundle/Tests/</directory>
         </testsuite>
     </testsuites>
+
+    <!--<php>-->
+        <!--<server name="KERNEL_DIR" value="./src" />-->
+    <!--</php>-->
 
     <filter>
         <whitelist>

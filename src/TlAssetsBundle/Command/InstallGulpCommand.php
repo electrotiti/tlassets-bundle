@@ -20,16 +20,20 @@ class InstallGulpCommand extends ContainerAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $root = $this->getContainer()->get('kernel')->getRootDir()."/../";
-        $gulpFolder = $root.'vendor/electrotiti/tlassets-bundle/src/TlAssetsBundle/Compiler/Gulp/';
+        $gulpSRCFolder = $root.'vendor/electrotiti/tlassets-bundle/src/TlAssetsBundle/Compiler/Gulp/';
+        $config = $this->getContainer()->getParameter('tl_assets.config');
 
-        $process = new Process('cd '.$root.' && npm install '.$gulpFolder.' --prefix ./vendor/node_modules');
-        $process->run(function ($type, $buffer) use ($output) {
-            if (Process::ERR === $type) {
-                $output->writeln('<error>'.$buffer.'</error>');
-            } else {
-                $output->writeln('<info>'.$buffer.'</info>');
-            }
-        });
+        // Build the command line
+        $command = 'cd '.$root.' && npm install '.$gulpSRCFolder.' --prefix '.$config['node_folder'];
+
+        // Command execution
+        exec ($command,$result,$return);
+
+        if($return == 0) {
+            $output->writeln('<info>Gulp and dependencies successfully installed.</info>');
+        } else {
+            $output->writeln('<error>Some errors occurred during installation, please check logs.</error>');
+        }
     }
 
 }

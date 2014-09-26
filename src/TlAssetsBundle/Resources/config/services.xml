@@ -12,15 +12,17 @@
 
     <services>
         <service id="tl_assets.twig_manager" class="%tl_assets.twig_manager.class%">
-            <argument>%kernel.root_dir%</argument>
-            <argument>%kernel.cache_dir%</argument>
+            <argument>%tl_assets.config%</argument>
             <argument>%tl_assets.debug%</argument>
             <argument>%tl_assets.use_cache%</argument>
             <argument>%tl_assets.live_compilation%</argument>
-            <argument>%tl_assets.variables%</argument>
 
             <call method="setDefaultFilters">
                 <argument>%tl_assets.default_filters%</argument>
+            </call>
+
+            <call method="setVariables">
+                <argument>%tl_assets.variables%</argument>
             </call>
 
             <call method="setCompilerManager">
@@ -36,9 +38,8 @@
 
 
         <service id="tl_assets.compiler" class="%tl_assets.compiler.class%">
-            <argument type="service" id="kernel"></argument>
             <argument>%kernel.root_dir%</argument>
-            <argument>%kernel.cache_dir%</argument>
+            <argument>%tl_assets.config%</argument>
             <argument>%tl_assets.debug%</argument>
 
             <call method="setLogger">

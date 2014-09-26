@@ -21,24 +21,35 @@ class DumpCommand extends ContainerAwareCommand
     {
         $this
             ->setName('tlassets:dump')
-            ->setDescription('Dump buffer of assets for Gulp');
+            ->setDescription('Clean buffer, parse twig template and compile assets (tlassets:flush & tlassets:parse & tlassets:compile)');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $twigEnv = $this->getContainer()->get('twig');
-
-        $bundles = $this->getContainer()->getParameter('tl_assets.bundles');
-        $finder = new Finder();
-
-        foreach($bundles as $bundle) {
-            $pathToBundle = $this->getContainer()->get('kernel')->locateResource('@'.$bundle);
-            $files = $finder->files()->in($pathToBundle)->name('*.twig');
-
-            foreach($files as $file) {
-                $stream = $twigEnv->tokenize($file->getContents());
-                $twigEnv->parse($stream);
-            }
+        $output->writeln('<info>*** FLUSH ****</info>');
+        $command = $this->getApplication()->find('tlassets:flush');
+        $returnCode = $command->run($input, $output);
+        if($returnCode != 0) {
+            $output->writeln('<error>Error of flushing</error>');
+            exit(1);
         }
+
+
+        $output->writeln("\n<info>*** PARSING ****</info>");
+        $command = $this->getApplication()->find('tlassets:parse');
+        $returnCode = $command->run($input, $output);
+        if($returnCode != 0) {
+            $output->writeln('<error>Error of parsing</error>');
+            exit(1);
+        }
+
+        $output->writeln("\n<info>*** COMPILATION ****</info>");
+        $command = $this->getApplication()->find('tlassets:compile');
+        $returnCode = $command->run($input, $output);
+        if($returnCode != 0) {
+            $output->writeln('<error>Error of compilation</error>');
+            exit(1);
+        }
+
     }
 }

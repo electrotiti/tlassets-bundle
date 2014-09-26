@@ -30,6 +30,8 @@ class TlAssetsExtension extends Extension
         $container->setParameter('tl_assets.bundles', $config['bundles']);
         $container->setParameter('tl_assets.use_cache', $config['use_cache']);
         $container->setParameter('tl_assets.variables', $config['variables']);
+        $container->setParameter('tl_assets.config', $config['config']);
+        $container->setParameter('tl_assets.web_folder', $config['config']['web_folder']);
 
         $defaultVal = $config['filters'];
         $filters = array();

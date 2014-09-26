@@ -4,21 +4,19 @@ namespace TlAssetsBundle\Compiler;
 
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Process\Process;
+use TlAssetsBundle\Extension\Twig\TlAssetsManager;
 
 class CompilerManager
 {
-
-    private $kernel;
     private $rootDir;
-    private $cacheDir;
+    private $config;
     private $debug;
     private $logger;
 
-    public function __construct($kernel, $rootDir, $cacheDir, $debug)
+    public function __construct($rootDir, $config, $debug)
     {
-        $this->kernel = $kernel;
         $this->rootDir = $rootDir;
-        $this->cacheDir = $cacheDir;
+        $this->config = $config;
         $this->debug = $debug;
     }
 
@@ -27,35 +25,31 @@ class CompilerManager
         $this->logger = $logger;
     }
 
-    public function compileAssets($bufferFilename = null, $callback = null)
+    public function compileAssets($bufferFilename = null, $showLog = true, $verbose = false)
     {
-        $gulpFolder = $this->rootDir.'/../vendor/node_modules/tlassets-bundle/';
-        $buffer = $this->cacheDir.'/tlassets/buffer/'.($bufferFilename != null ? $bufferFilename : '');
+        $gulpFolder = $this->config['node_folder'].'/tlassets-bundle/';
+        $buffer = $this->config['buffer_folder'].'/'.($bufferFilename != null ? $bufferFilename : '');
 
-        $command = 'cd '.$gulpFolder.' &&  ./node_modules/gulp/bin/gulp.js --buffer='.$buffer;
-        if($this->debug) {
+        $command = $gulpFolder."node_modules/gulp/bin/gulp.js --cwd=$gulpFolder --buffer=$buffer";
+        if($verbose) {
             $command .= ' --verbose';
         }
 
-        $process = new Process($command);
+        while (@ ob_end_flush()); // end all output buffers if any
 
-        if($callback == null && $this->debug) {
-            $logger = $this->logger;
-            $callback = function($type, $output) use($logger){
-                if(Process::ERR === $type) {
-                    $logger->error('[Tlassets] '.$output);
-                } else {
-                    $logger->debug('[Tlassets] '.$output);
-                }
-            };
+        $proc = popen($command, 'r');
+        while (!feof($proc))
+        {
+            if($this->debug) {
+                $this->logger->debug('[Tlassets] '.fread($proc, 4096));
+            }
+
+            if($showLog) {
+                echo fread($proc, 4096);
+            }
+            @ flush();
         }
-
-        $process->run($callback);
-
-
-        if (!$process->isSuccessful()) {
-            throw new \RuntimeException($process->getErrorOutput());
-        }
+        pclose($proc);
     }
 
 }

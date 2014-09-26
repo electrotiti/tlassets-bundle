@@ -24,15 +24,16 @@ class TlAssetsManager
      */
     const WEB_FOLDER = '/web';
 
-    private $rootDir;
-    private $rootCacheDir;
+    private $config;
     private $debug;
     private $useCache;
     private $liveCompilation;
-    private $variables;
+
+    private $webPath;
+    private $bufferFolder;
 
     private $defaultFilters = array();
-
+    private $variables  = array();
     private $compilerManager;
 
     private $buffer = false;
@@ -47,17 +48,15 @@ class TlAssetsManager
      * @param boolean $liveCompilation Compiles assets each page load
      * @param array $variables Variable to replace in assets path
      */
-    public function __construct($rootDir, $rootCacheDir, $debug, $useCache, $liveCompilation, $variables)
+    public function __construct($config, $debug = false, $useCache = false, $liveCompilation = false)
     {
-        $this->rootDir = str_replace('/app','',$rootDir);
-        $this->rootCacheDir = $rootCacheDir;
+        $this->config = $config;
         $this->debug   = $debug;
         $this->useCache = $useCache;
         $this->liveCompilation = $liveCompilation;
-        $this->variables = $variables;
 
-        $this->webPath = $this->rootDir.self::WEB_FOLDER;
-        $this->bufferFolder = $this->rootCacheDir.self::BUFFER_FOLDER;
+        $this->webPath = $this->config['web_folder'].(substr($this->config['web_folder'],-1) != '/' ? '/' : '');
+        $this->bufferFolder = $this->config['buffer_folder'].(substr($this->config['buffer_folder'],-1) != '/' ? '/' : '');
     }
 
     /**
@@ -66,6 +65,11 @@ class TlAssetsManager
     public function setDefaultFilters($defaultFilters)
     {
         $this->defaultFilters = $defaultFilters;
+    }
+
+    public function setVariables($variables)
+    {
+        $this->variables = $variables;
     }
 
     /**
@@ -94,7 +98,7 @@ class TlAssetsManager
 
         // Compile assets if live compilation is enable
         if($this->liveCompilation) {
-            $this->compilerManager->compileAssets($this->bufferFileName);
+            $this->compilerManager->compileAssets($this->bufferFileName, false);
         }
     }
 
@@ -174,7 +178,7 @@ class TlAssetsManager
             if("@" == $input[0]) {
                 $path = $this->webPath.$this->_getWebPathByReference($input);
             } else {
-                $path = $this->webPath.("/" != $input[0] ? '/'  :'').$input;
+                $path = $this->webPath.("/" == $input[0] ? substr($input,1,strlen($input) - 1) : $input);
             }
 
             // Remove "*" if it's the last caractere
@@ -199,10 +203,10 @@ class TlAssetsManager
                     $sourceFiles[] = $realPath;
                 }
             } else {
-                if(false === file_exists($this->webPath.$input)) {
-                    throw new \Exception('Unable to find file : '.$this->webPath.$input);
+                if(false === file_exists($path)) {
+                    throw new \Exception('Unable to find file : '.$path);
                 }
-                $sourceFiles[] = $this->webPath.$input;
+                $sourceFiles[] = $path;
             }
         }
 

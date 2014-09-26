@@ -31,24 +31,40 @@ Below an example of tags that you can use in your Twig
 
 ````
 
-## Generate your assets
-
-#### Install your assets:
+## Install your assets:
 
 ````
 php app/console assets:install
 ````
 _This command (from Symfony), copy your assets from the folder : "src/" to the folder : "web/bundles/"_
 
+## Quick assets compilation
 
-#### Dump tlassets buffer on cache/ for GULP
+To compile quickly your assets you just have to do this:
 ````
-php app/console tlassets:dump
+php app/console assets:dump
 ````
-_This command parse your Twig and create a JSON file on the cache directory that will be used by GULP_
+_This command do a tlassets:flush, a tlassets:parse and a tlassets:compile"_
 
-#### Compile assets based on Gulp buffer
+## Generate your assets step by step
+
+Alternatively (and it's why this bundle is different of Assetic), each task on assets construction can be do separately
+
+### Flush previous compilation
+````
+php app/console tlassets:flush
+````
+_This command remove cache and assets previously generated in order to have a clean environment_
+
+### Parse Twig template
+````
+php app/console tlassets:parse
+````
+_This command parse your Twig template and create a JSON file on the cache directory that will be used by GULP_
+
+### Compile assets
 ````
 php app/console tlassets:compile
 ````
-_This command retrieves all file buffer and compile the final assets files_
+_This command retrieves all file buffer previously created with the parsing command and compile the final assets files_
+

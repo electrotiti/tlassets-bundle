@@ -6,7 +6,18 @@ use TlAssetsBundle\Extension\Twig\TlAssetsManager;
 
 class TlAssetsManagerTest extends \PHPUnit_Framework_TestCase
 {
-    const TEST_DIR = './src/TlAssetsBundle/Tests';
+    const TEST_FOLDER = './src/TlAssetsBundle/Tests';
+    const TMP_FOLDER = './src/TlAssetsBundle/Tests/tmp';
+    private $config;
+
+    public function setUp()
+    {
+        $this->config = array('web_folder'=>self::TEST_FOLDER.'/web',
+                              'buffer_folder'=>self::TMP_FOLDER.'/cache',
+                              'node_folder'=>self::TMP_FOLDER.'/node_modules',
+                              'js_dest_folder'=>self::TMP_FOLDER.'/public/js',
+                              'css_dest_folder'=>self::TMP_FOLDER.'/public/css');
+    }
 
 
     public function dataProviderForBuildBuffer() {
@@ -19,7 +30,7 @@ class TlAssetsManagerTest extends \PHPUnit_Framework_TestCase
                           'files'=>array(array('src'=>getcwd().'/src/TlAssetsBundle/Tests/web/bundles/testbundle/js/main.js',
                                                'dest'=>'/public/js/1dea999_part1_main.js')),
                           'type'=>'javascript',
-                          'rootWebPath'=>'./src/TlAssetsBundle/Tests/web',
+                          'rootWebPath'=>'./src/TlAssetsBundle/Tests/web/',
                           'filters'=>array()
                     )
                 ),
@@ -31,7 +42,7 @@ class TlAssetsManagerTest extends \PHPUnit_Framework_TestCase
                           'files'=>array(array('src'=>getcwd().'/src/TlAssetsBundle/Tests/web/bundles/testbundle/less/style.less',
                                                'dest'=>'/public/css/af06088_part1_style.css')),
                           'type'=>'stylesheet',
-                          'rootWebPath'=>'./src/TlAssetsBundle/Tests/web',
+                          'rootWebPath'=>'./src/TlAssetsBundle/Tests/web/',
                           'filters'=>array('less')
                     )
                 ),
@@ -44,7 +55,7 @@ class TlAssetsManagerTest extends \PHPUnit_Framework_TestCase
                                              'dest'=>'/public/css/733207e_part1_style.css')),
                         'type'=>'stylesheet',
                         'concatDest'=>'/public/css/733207e.css',
-                        'rootWebPath'=>'./src/TlAssetsBundle/Tests/web',
+                        'rootWebPath'=>'./src/TlAssetsBundle/Tests/web/',
                         'filters'=>array('less','concat')
                     )
                 )
@@ -56,11 +67,11 @@ class TlAssetsManagerTest extends \PHPUnit_Framework_TestCase
      */
     public function testBuildBuffer($inputs, $attributes, $tag, $expected)
     {
-        $tlAssetsManager = new TlAssetsManager(self::TEST_DIR,self::TEST_DIR.'/cache/',false,false,false,array());
+        $tlAssetsManager = new TlAssetsManager($this->config);
         $tlAssetsManager->load($inputs, $attributes,$tag) ;
 
-        $this->assertFileExists(self::TEST_DIR.'/cache/tlassets/buffer/'.$expected['name'].'.json');
-        $actual = file_get_contents(self::TEST_DIR.'/cache/tlassets/buffer/'.$expected['name'].'.json');
+        $this->assertFileExists($this->config['buffer_folder'].'/'.$expected['name'].'.json');
+        $actual = file_get_contents($this->config['buffer_folder'].'/'.$expected['name'].'.json');
         $actualData = json_decode($actual,true);
 
         $this->assertEquals($expected, $actualData);
@@ -68,9 +79,9 @@ class TlAssetsManagerTest extends \PHPUnit_Framework_TestCase
 
     public function tearDown()
     {
-//        if(file_exists(self::TEST_DIR.'/cache/')) {
-//            $this->_remove(self::TEST_DIR.'/cache/');
-//        }
+        if(file_exists(self::TMP_FOLDER)) {
+            $this->_remove(self::TMP_FOLDER);
+        }
     }
 
     private function _remove($path)
