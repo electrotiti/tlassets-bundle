@@ -2,17 +2,17 @@ var gulp = require('gulp');
 var gutil = require('gulp-util');
 var less = require('gulp-less');
 var rename = require("gulp-rename");
-//var watch = require('gulp-watch');
 var argv = require('yargs').argv;
-//var Stream = require("stream");
 var plumber = require("gulp-plumber");
 var concat = require('gulp-concat');
-//var JSONStream = require('JSONStream');
 var debug = require('gulp-debug');
 var tap = require('gulp-tap');
 var path = require('path');
 var uglify = require('gulp-uglify');
 var filesize = require('gulp-filesize');
+var gulpif = require('gulp-if');
+var lazypipe = require('lazypipe');
+
 
 var checkArgv = function()
 {
@@ -27,6 +27,19 @@ var compileAssets = function(assets)
 
     var subCompile = function(assets, source, needConcat, dest)
     {
+
+        var hasVerbose = typeof argv.verbose != "undefined";
+        var needMinify = assets.filters.indexOf('minify') !== -1;
+        var needMinifyJs = needMinify && assets.type == 'javascript';
+
+        var lessChannel = lazypipe()
+            .pipe(less({
+                cleancss : needMinify/*,
+                paths: [ path.join(__dirname, 'less', 'includes') ]*/
+            }));
+
+        var jsChannel = lazypipe().pipe(uglify());
+
 
         gulp.src(source)
             .pipe(plumber({

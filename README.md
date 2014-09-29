@@ -3,18 +3,20 @@ tlassets-bundle
 
 [![Build Status](https://travis-ci.org/electrotiti/tlassets-bundle.svg?branch=master)](https://travis-ci.org/electrotiti/tlassets-bundle)
 
-TlAssetsBundle is an alternative to Assetic, it build your assets using NodeJS, GULP and Twig on a Symfony2 project.
+TlAssetsBundle is an alternative to Assetic, it build your assets using NodeJS, GULP and custom Twig tags on a Symfony2 project.
 
-__WARNING: For this moment this bundle is under development, do not use on production.__
+__WARNING: This bundle is under development, do not use on production.__
 
 ## How it works ?
 __1:/__ In your Twig template, use the tags "style" and "js" to give assets source path and optional filters
 
-__2:/__ The command "tlassets:parse", search all Twig template with these tags and create a Json buffer file in cache that describe the location of source path, the destination filename and some others options
+__2:/__ The parser, find all Twig template with these tags and create a JSON buffer file in cache that describe 
+the location of source path, the destination filename and some others options
 
-__3:/__ The command "tlassets:compile" read the buffer files previously created and compile the final assets with GULP
+__3:/__ The compiler read the buffer files previously created and compile the final assets with GULP
 
-The goal of these two steps (and not one step like assetic does), is to compile only your assets without parsing all your Twig template when you just modify your assets file.
+The goal of these two steps (and not one step like assetic does), is to  parse your Twig template only when your assets 
+definition change, and compile your assets only when you modify the content of your assets file.
 
 
 ## Prerequisites
