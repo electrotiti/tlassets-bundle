@@ -57,6 +57,8 @@ class TlAssetsManager
 
         $this->webPath = $this->config['web_folder'].(substr($this->config['web_folder'],-1) != '/' ? '/' : '');
         $this->bufferFolder = $this->config['buffer_folder'].(substr($this->config['buffer_folder'],-1) != '/' ? '/' : '');
+
+        $this->compileDestFolder = $this->config['public_folder'].(substr($this->config['public_folder'],-1) != '/' ? '/' : '');
     }
 
     /**
@@ -145,7 +147,7 @@ class TlAssetsManager
                 $this->collection->createAssets($filePath);
             }
 
-            $this->buffer = $this->collection->exportBufferData($this->webPath);
+            $this->buffer = $this->collection->exportBufferData($this->webPath, $this->compileDestFolder);
         }
 
         // Save buffer file in cache folder

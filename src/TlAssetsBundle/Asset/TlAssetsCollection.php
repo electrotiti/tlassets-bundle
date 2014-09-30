@@ -14,6 +14,9 @@ use TlAssetsBundle\Extension\Twig\TlAssetsExtension;
 
 class TlAssetsCollection
 {
+    const JS_FOLDER = 'js';
+    const CSS_FOLDER = 'css';
+
     private $inputs;
     private $attributes;
     private $tag;
@@ -25,6 +28,10 @@ class TlAssetsCollection
         $this->inputs       = $inputs;
         $this->attributes   = $attributes;
         $this->tag = $tag;
+
+        if(!in_array($this->tag,array(TlAssetsExtension::TAG_STYLESHEET, TlAssetsExtension::TAG_JAVASCRIPT))) {
+            throw new \Exception('Unknow tag '.$this->tag);
+        }
 
         $this->filters = array_key_exists('filters',$this->attributes) ? $this->attributes['filters'] : array();
         $this->generateHash = in_array('hash',$this->filters);
@@ -71,13 +78,13 @@ class TlAssetsCollection
         return substr(sha1(serialize($this->inputs).serialize($this->attributes)), 0, 7);
     }
 
-    public function exportBufferData($rootWebPath = '')
+    public function exportBufferData($rootWebPath, $destFolder)
     {
         $tagType = array(TlAssetsExtension::TAG_STYLESHEET=>'stylesheet',TlAssetsExtension::TAG_JAVASCRIPT=>'javascript');
 
         $files = array();
         foreach($this->assets as $asset) {
-            $files[] = array('src'=>$asset->getRealFilePath(), 'dest'=>$this->_getOutput().$asset->getFilename());
+            $files[] = array('src'=>$asset->getRealFilePath(), 'dest'=>$this->_getOutput($destFolder).$asset->getFilename());
         }
 
         $attributes = array('name'=>$this->getName(),
@@ -86,7 +93,7 @@ class TlAssetsCollection
                             'rootWebPath'=>$rootWebPath);
 
         if(in_array('concat',$this->filters)) {
-            $contactDest = $this->_getOutput().$this->getName().($this->generateHash ? '_'.$this->getHash() : '').'.'.$this->_getExtension();
+            $contactDest = $this->_getOutput($destFolder).$this->getName().($this->generateHash ? '_'.$this->getHash() : '').'.'.$this->_getExtension();
             $attributes['concatDest'] = $contactDest;
         }
 
@@ -107,8 +114,8 @@ class TlAssetsCollection
                 break;
 
             default:
-                $extension = '';
-                break;
+                throw new \Exception('Unknow tag '.$this->tag);
+            break;
         }
 
         if(in_array('minify',$this->filters)) {
@@ -119,26 +126,15 @@ class TlAssetsCollection
     }
 
 
-    private function _getOutput()
+    private function _getOutput($destFolder)
     {
         if(array_key_exists('output',$this->attributes)) {
             $output = substr($this->attributes['output'],-1) !== "/" ? $this->attributes['output'].'/' : $this->attributes['output'];
         } else {
 
-            switch($this->tag) {
-                case TlAssetsExtension::TAG_STYLESHEET :
-                    $subFolder = 'css';
-                    break;
-
-                case TlAssetsExtension::TAG_JAVASCRIPT :
-                    $subFolder = 'js';
-                    break;
-
-                default:
-                    throw new \Exception('Unknow tag '.$this->tag);
-                break;
-            }
-            $output = '/public/'.$subFolder.'/';
+            $subFolders = array(TlAssetsExtension::TAG_STYLESHEET=>self::CSS_FOLDER,
+                                TlAssetsExtension::TAG_JAVASCRIPT=>self::JS_FOLDER);
+            $output = $destFolder.$subFolders[$this->tag].'/';
         }
 
         return $output;

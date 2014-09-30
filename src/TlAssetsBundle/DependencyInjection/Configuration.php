@@ -43,8 +43,7 @@ class Configuration implements ConfigurationInterface
                             ->booleanNode('web_folder')->defaultValue('%kernel.root_dir%/../web')->end()
                             ->booleanNode('buffer_folder')->defaultValue('%kernel.cache_dir%/tlassets/buffer')->end()
                             ->booleanNode('node_folder')->defaultValue('%kernel.root_dir%/../vendor/node_modules')->end()
-                            ->booleanNode('js_dest_folder')->defaultValue('%tl_assets.web_folder%/public/js')->end()
-                            ->booleanNode('css_dest_folder')->defaultValue('%tl_assets.web_folder%/public/css')->end()
+                            ->booleanNode('public_folder')->defaultValue('/public')->end()
                         ->end()
                     ->end()
 

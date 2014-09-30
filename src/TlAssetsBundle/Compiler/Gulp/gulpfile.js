@@ -28,54 +28,62 @@ var compileAssets = function(assets)
     var subCompile = function(assets, source, needConcat, dest)
     {
 
-        var hasVerbose = typeof argv.verbose != "undefined";
+        // Init some boolean
+        var isLess = assets.filters.indexOf('less') !== -1 && assets.type == 'stylesheet';
+        var showDebug = typeof argv.verbose != "undefined";
         var needMinify = assets.filters.indexOf('minify') !== -1;
         var needMinifyJs = needMinify && assets.type == 'javascript';
 
+        // Less channel definition
         var lessChannel = lazypipe()
-            .pipe(less({
+            .pipe(less,{
                 cleancss : needMinify/*,
                 paths: [ path.join(__dirname, 'less', 'includes') ]*/
-            }));
+            });
 
-        var jsChannel = lazypipe().pipe(uglify());
+        // Javascript channel definition
+        var jsChannel = lazypipe().pipe(uglify);
 
 
-        gulp.src(source)
+        //// Debug channel definition
+        var debugChannel = lazypipe()
+            .pipe(debug)
+            .pipe(tap,function(file,t){
+                gutil.log(gutil.colors.green('File created:'), file.path)
+            })
+            .pipe(filesize);
+
+
+            /* Compiler main flow*/
+            gulp.src(source)
+
+            // Prevent crash of script : when an error occur this display error and stop script
             .pipe(plumber({
                 errorHandler: function (err) {
                     gutil.log(gutil.colors.red(err));
                     process.exit(1);
                 }
             }))
-            .pipe(
-                assets.filters.indexOf('less') !== -1 && assets.type == 'stylesheet' ?
-                    less({
-                        cleancss : assets.filters.indexOf('minify') !== -1,
-                        paths: [ path.join(__dirname, 'less', 'includes') ]
-                    }) :
-                    gutil.noop()
-            )
-            .pipe(
-                assets.filters.indexOf('minify') !== -1 && assets.type == 'javascript' ?
-                    uglify() :
-                    gutil.noop()
-            )
+
+            //Compile Less file to css file
+            .pipe(gulpif(isLess,lessChannel()))
+
+            // Compile javascript (Minify, etc.)
+            .pipe(gulpif(needMinifyJs,jsChannel()))
+
+            // Concat all file together or just move new file to the destination folder with new name
             .pipe(needConcat ? concat(assets.concatDest) : rename(dest))
+
+            // Destination folder of compiled files
             .pipe(gulp.dest(assets.rootWebPath))
-            .pipe(typeof argv.verbose != "undefined" ? debug() : gutil.noop())
-            .pipe(typeof argv.verbose != "undefined" ?
-                tap(function(file,t){ gutil.log(gutil.colors.green('File created:'), file.path) }) :
-                gutil.noop()
-            )
-            .pipe(typeof argv.verbose != "undefined" ? filesize() : gutil.noop());
+
+            // Show more log info, if debug is enable
+            .pipe(gulpif(showDebug,debugChannel()));
     };
 
 
     if(needConcat) {
-
         var srcList = [];
-
         assets.files.forEach(function(file){
             srcList.push(file.src);
         });
@@ -89,7 +97,7 @@ var compileAssets = function(assets)
     }
 };
 
-gulp.task('dump', function () {
+gulp.task('compile', function () {
     checkArgv();
     gulp.src(argv.buffer + (argv.buffer.substr(-5, 5) == '.json' ? '' : '*.json')).pipe(tap(function(file, t){
         var assets =  JSON.parse(file.contents.toString());
@@ -97,7 +105,7 @@ gulp.task('dump', function () {
     }));
 });
 
-gulp.task('default',['dump']);
+gulp.task('default',['compile']);
 
 //gulp.task('watch', function () {
 //    gulp.watch('./web/bundles/**/less/*.less', ['default']);

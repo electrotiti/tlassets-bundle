@@ -19,21 +19,28 @@ class InstallGulpCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $root = $this->getContainer()->get('kernel')->getRootDir()."/../";
-        $gulpSRCFolder = $root.'vendor/electrotiti/tlassets-bundle/src/TlAssetsBundle/Compiler/Gulp/';
+        $rootDir = $this->getContainer()->get('kernel')->getRootDir()."/../";
+        $gulpSrcFolder = $rootDir.'vendor/electrotiti/tlassets-bundle/src/TlAssetsBundle/Compiler/Gulp/';
         $config = $this->getContainer()->getParameter('tl_assets.config');
 
-        // Build the command line
-        $command = 'cd '.$root.' && npm install '.$gulpSRCFolder.' --prefix '.$config['node_folder'];
-
-        // Command execution
-        exec ($command,$result,$return);
+        $return = $this->_installGulp($rootDir, $gulpSrcFolder, $config['node_folder']);
 
         if($return == 0) {
             $output->writeln('<info>Gulp and dependencies successfully installed.</info>');
         } else {
             $output->writeln('<error>Some errors occurred during installation, please check logs.</error>');
         }
+    }
+
+    private function _installGulp($rootDir, $gulpSrcFolder, $destNodeFolder)
+    {
+        // Build the command line
+        $command = 'cd '.$rootDir.' && npm install '.$gulpSrcFolder.' --prefix '.$destNodeFolder.' 2>&1';
+
+        // Command execution
+        exec ($command,$result,$return);
+
+        return $return;
     }
 
 }

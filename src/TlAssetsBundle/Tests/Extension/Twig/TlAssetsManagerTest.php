@@ -15,8 +15,7 @@ class TlAssetsManagerTest extends \PHPUnit_Framework_TestCase
         $this->config = array('web_folder'=>self::TEST_FOLDER.'/web',
                               'buffer_folder'=>self::TMP_FOLDER.'/cache',
                               'node_folder'=>self::TMP_FOLDER.'/node_modules',
-                              'js_dest_folder'=>self::TMP_FOLDER.'/public/js',
-                              'css_dest_folder'=>self::TMP_FOLDER.'/public/css');
+                              'public_folder'=>'/public');
     }
 
 

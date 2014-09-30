@@ -36,7 +36,7 @@ class FlushCommand extends ContainerAwareCommand
             }
         };
 
-        $folders = array($config['buffer_folder'], $config['js_dest_folder'], $config['css_dest_folder']);
+        $folders = array($config['buffer_folder'], $config['web_folder'].$config['public_folder']);
 
         foreach($folders as $folder) {
             $flush($folder);
