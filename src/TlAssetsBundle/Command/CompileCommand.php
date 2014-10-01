@@ -22,9 +22,9 @@ class CompileCommand extends ContainerAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $verbose = $input->getOption('debug');
-        $showLog = $input->getOption('nodebug');
+        $hideLog = $input->getOption('nodebug');
         $compilerManager = $this->getContainer()->get('tl_assets.compiler');
-        $compilerManager->compileAssets(null,!$showLog, $verbose);
+        $compilerManager->compileAssets(null,!$hideLog, $verbose);
     }
 
 }

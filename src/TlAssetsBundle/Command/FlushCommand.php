@@ -5,6 +5,7 @@ namespace TlAssetsBundle\Command;
 
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Finder\Finder;
 
@@ -14,22 +15,28 @@ class FlushCommand extends ContainerAwareCommand
     {
         $this
             ->setName('tlassets:flush')
-            ->setDescription('Remove buffer file and assets previously generated');
+            ->setDescription('Remove buffer file and assets previously generated')
+            ->addOption('nodebug', null, InputOption::VALUE_NONE, 'Do not show any log');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $hideLog = $input->getOption('nodebug');
         $config = $this->getContainer()->getParameter('tl_assets.config');
 
-        $flush = function($folder) use ($output)
+        $flush = function($folder) use ($output,$hideLog)
         {
             if(false === file_exists($folder)) {
-                $output->writeln('<info>'.$folder.' doesn\'t exist.</info>');
+                if(!$hideLog) {
+                    $output->writeln('<info>'.$folder.' doesn\'t exist.</info>');
+                }
             } else {
                 $res = $this->_remove($folder);
 
                 if($res) {
-                    $output->writeln('<info>[FLUSHED] '.$folder.'</info>');
+                    if(!$hideLog) {
+                        $output->writeln('<info>[FLUSHED] '.$folder.'</info>');
+                    }
                 } else {
                     $output->writeln('<error>[ERROR] '.$folder.'</error>');
                 }

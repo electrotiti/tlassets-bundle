@@ -11,6 +11,7 @@ namespace TlAssetsBundle\Command;
 
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Finder\Finder;
 
@@ -21,11 +22,13 @@ class ParseCommand extends ContainerAwareCommand
     {
         $this
             ->setName('tlassets:parse')
-            ->setDescription('Parse twig template to create buffer file of assets for Gulp');
+            ->setDescription('Parse twig template to create buffer file of assets for Gulp')
+            ->addOption('nodebug', null, InputOption::VALUE_NONE, 'Do not show any log');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $hideLog = $input->getOption('nodebug');
         $twigEnv = $this->getContainer()->get('twig');
 
         $bundles = $this->getContainer()->getParameter('tl_assets.bundles');
@@ -33,7 +36,9 @@ class ParseCommand extends ContainerAwareCommand
 
         foreach($bundles as $bundle) {
 
-            $output->writeln("<info>[$bundle]</info>");
+            if(!$hideLog) {
+                $output->writeln("<info>[$bundle]</info>");
+            }
 
             $pathToBundle = $this->getContainer()->get('kernel')->locateResource('@'.$bundle);
             $files = $finder->files()->in($pathToBundle)->name('*.twig');
@@ -41,7 +46,9 @@ class ParseCommand extends ContainerAwareCommand
             foreach($files as $file) {
                 $stream = $twigEnv->tokenize($file->getContents());
                 $twigEnv->parse($stream);
-                $output->writeln($file->getRealpath());
+                if(!$hideLog) {
+                    $output->writeln($file->getRealpath());
+                }
             }
         }
     }

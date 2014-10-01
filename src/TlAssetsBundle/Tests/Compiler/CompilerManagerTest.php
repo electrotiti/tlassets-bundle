@@ -2,8 +2,9 @@
 
 namespace TlAssetsBundle\Tests\Compiler;
 
+use TlAssetsBundle\Tests\AbstractTest;
 
-class CompilerManagerTest extends \PHPUnit_Framework_TestCase
+class CompilerManagerTest extends AbstractTest
 {
     public function testCompileAssets()
     {

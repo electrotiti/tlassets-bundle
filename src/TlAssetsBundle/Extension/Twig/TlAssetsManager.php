@@ -55,7 +55,7 @@ class TlAssetsManager
         $this->useCache = $useCache;
         $this->liveCompilation = $liveCompilation;
 
-        $this->webPath = $this->config['web_folder'].(substr($this->config['web_folder'],-1) != '/' ? '/' : '');
+        $this->webPath = $this->config['web_folder'];
         $this->bufferFolder = $this->config['buffer_folder'].(substr($this->config['buffer_folder'],-1) != '/' ? '/' : '');
 
         $this->compileDestFolder = $this->config['public_folder'].(substr($this->config['public_folder'],-1) != '/' ? '/' : '');

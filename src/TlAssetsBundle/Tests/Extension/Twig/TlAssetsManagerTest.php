@@ -3,21 +3,10 @@
 namespace TlAssetsBundle\Tests\Extension\Twig;
 
 use TlAssetsBundle\Extension\Twig\TlAssetsManager;
+use TlAssetsBundle\Tests\AbstractTest;
 
-class TlAssetsManagerTest extends \PHPUnit_Framework_TestCase
+class TlAssetsManagerTest extends AbstractTest
 {
-    const TEST_FOLDER = './src/TlAssetsBundle/Tests';
-    const TMP_FOLDER = './src/TlAssetsBundle/Tests/tmp';
-    private $config;
-
-    public function setUp()
-    {
-        $this->config = array('web_folder'=>self::TEST_FOLDER.'/web',
-                              'buffer_folder'=>self::TMP_FOLDER.'/cache',
-                              'node_folder'=>self::TMP_FOLDER.'/node_modules',
-                              'public_folder'=>'/public');
-    }
-
 
     public function dataProviderForBuildBuffer() {
         return array(
@@ -81,27 +70,5 @@ class TlAssetsManagerTest extends \PHPUnit_Framework_TestCase
         if(file_exists(self::TMP_FOLDER)) {
             $this->_remove(self::TMP_FOLDER);
         }
-    }
-
-    private function _remove($path)
-    {
-        if (is_dir($path) === true)
-        {
-            $files = array_diff(scandir($path), array('.', '..'));
-
-            foreach ($files as $file)
-            {
-                $this->_remove(realpath($path) . '/' . $file);
-            }
-
-            return rmdir($path);
-        }
-
-        else if (is_file($path) === true)
-        {
-            return unlink($path);
-        }
-
-        return false;
     }
 }
