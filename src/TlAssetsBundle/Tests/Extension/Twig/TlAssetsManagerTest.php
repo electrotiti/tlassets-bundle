@@ -19,19 +19,19 @@ class TlAssetsManagerTest extends AbstractTest
                           'files'=>array(array('src'=>getcwd().'/src/TlAssetsBundle/Tests/web/bundles/test/js/main.js',
                                                'dest'=>'/public/js/2010223_part1_main.js')),
                           'type'=>'javascript',
-                          'rootWebPath'=>getcwd().'/src/TlAssetsBundle/Tests/web/',
+                          'rootWebPath'=>getcwd().'/src/TlAssetsBundle/Tests/web',
                           'filters'=>array()
                     )
                 ),
                 array(
-                    array('/bundles/test/less/'),
+                    array('/bundles/test/less/style.less'),
                     array('filters'=>array('less')),
                     'style',
-                    array('name'=>'feaea60',
+                    array('name'=>'ef05ca7',
                           'files'=>array(array('src'=>getcwd().'/src/TlAssetsBundle/Tests/web/bundles/test/less/style.less',
-                                               'dest'=>'/public/css/feaea60_part1_style.css')),
+                                               'dest'=>'/public/css/ef05ca7_part1_style.css')),
                           'type'=>'stylesheet',
-                          'rootWebPath'=>getcwd().'/src/TlAssetsBundle/Tests/web/',
+                          'rootWebPath'=>getcwd().'/src/TlAssetsBundle/Tests/web',
                           'filters'=>array('less')
                     )
                 ),
@@ -40,12 +40,17 @@ class TlAssetsManagerTest extends AbstractTest
                     array('filters'=>array('less','concat')),
                     'style',
                     array('name'=>'311b5b6',
-                        'files'=>array(array('src'=>getcwd().'/src/TlAssetsBundle/Tests/web/bundles/test/less/style.less',
-                                             'dest'=>'/public/css/311b5b6_part1_style.css')),
+                        'files'=>array(
+                                    array(  'src'=>getcwd().'/src/TlAssetsBundle/Tests/web/bundles/test/less/style2.less',
+                                            'dest'=>'/public/css/311b5b6_part1_style2.css'),
+                                    array(  'src'=>getcwd().'/src/TlAssetsBundle/Tests/web/bundles/test/less/style.less',
+                                            'dest'=>'/public/css/311b5b6_part2_style.css'),
+                                    ),
                         'type'=>'stylesheet',
                         'concatDest'=>'/public/css/311b5b6.css',
-                        'rootWebPath'=>getcwd().'/src/TlAssetsBundle/Tests/web/',
+                        'rootWebPath'=>getcwd().'/src/TlAssetsBundle/Tests/web',
                         'filters'=>array('less','concat')
+
                     )
                 )
         );

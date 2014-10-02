@@ -9,7 +9,7 @@ abstract class AbstractTest extends  \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->config = array('web_folder'=>getcwd().'/src/TlAssetsBundle/Tests/web/',
+        $this->config = array('web_folder'=>getcwd().'/src/TlAssetsBundle/Tests/web',
                               'buffer_folder'=>getcwd().'/src/TlAssetsBundle/Tests/tmp/cache',
                               'node_folder'=>getcwd().'/src/TlAssetsBundle/Tests/tmp/node_modules',
                               'public_folder'=>'/public');

@@ -16,9 +16,11 @@ class TlAssetsExtensionTest extends AbstractTest
         $tlAssetsManager = new TlAssetsManager($this->config);
         $twig->addExtension(new TlAssetsExtension($tlAssetsManager));
         $html = $twig->render('test.html.twig');
+var_dump($html);
 
-        $this->assertFileExists(__DIR__.'/../../tmp/cache/041df95.json');
+
+        $this->assertFileExists(__DIR__.'/../../tmp/cache/e608709.json');
         $this->assertFileExists(__DIR__.'/../../tmp/cache/527b1cf.json');
-
+        $this->assertFileExists(__DIR__.'/../../tmp/cache/832439e.json');
     }
 }
