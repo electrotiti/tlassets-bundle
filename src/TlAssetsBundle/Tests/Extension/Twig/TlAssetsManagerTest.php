@@ -8,7 +8,8 @@ use TlAssetsBundle\Tests\AbstractTest;
 class TlAssetsManagerTest extends AbstractTest
 {
 
-    public function dataProviderForBuildBuffer() {
+    public function dataProviderForBuildBuffer()
+    {
         return array(
                 array(
                     array('/bundles/test/js/'),
@@ -63,12 +64,5 @@ class TlAssetsManagerTest extends AbstractTest
         $actualData = json_decode($actual,true);
 
         $this->assertEquals($expected, $actualData);
-    }
-
-    public function tearDown()
-    {
-        if(file_exists(getcwd().'/src/TlAssetsBundle/Tests/tmp/')) {
-            $this->_remove(getcwd().'/src/TlAssetsBundle/Tests/tmp/');
-        }
     }
 }

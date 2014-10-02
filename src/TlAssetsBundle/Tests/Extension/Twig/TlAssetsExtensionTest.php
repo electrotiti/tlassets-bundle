@@ -8,7 +8,6 @@ use TlAssetsBundle\Tests\AbstractTest;
 
 class TlAssetsExtensionTest extends AbstractTest
 {
-
     public function testExtension()
     {
         $loader = new \Twig_Loader_Filesystem(__DIR__.'/../../Ressources/');
@@ -16,18 +15,10 @@ class TlAssetsExtensionTest extends AbstractTest
 
         $tlAssetsManager = new TlAssetsManager($this->config);
         $twig->addExtension(new TlAssetsExtension($tlAssetsManager));
-        $twig->render('test.html.twig');
+        $html = $twig->render('test.html.twig');
 
         $this->assertFileExists(__DIR__.'/../../tmp/cache/041df95.json');
         $this->assertFileExists(__DIR__.'/../../tmp/cache/527b1cf.json');
 
     }
-
-    public function tearDown()
-    {
-        if(file_exists(getcwd().'/src/TlAssetsBundle/Tests/tmp/')) {
-            $this->_remove(getcwd().'/src/TlAssetsBundle/Tests/tmp/');
-        }
-    }
-
 }

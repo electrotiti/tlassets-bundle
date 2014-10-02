@@ -4,11 +4,10 @@
         <testsuite name="Tlassets test suite">
             <directory suffix="Test.php">./src/TlAssetsBundle/Tests/</directory>
         </testsuite>
+        <testsuite name="Global tear down">
+            <file>./src/TlAssetsBundle/Tests/GlobalTearDown.php</file>
+        </testsuite>
     </testsuites>
-
-    <!--<php>-->
-        <!--<server name="KERNEL_DIR" value="./src" />-->
-    <!--</php>-->
 
     <filter>
         <whitelist>
