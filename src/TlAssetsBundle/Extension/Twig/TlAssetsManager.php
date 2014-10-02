@@ -55,10 +55,11 @@ class TlAssetsManager
         $this->useCache = $useCache;
         $this->liveCompilation = $liveCompilation;
 
-        $this->webPath = $this->config['web_folder'];
-        $this->bufferFolder = $this->config['buffer_folder'].(substr($this->config['buffer_folder'],-1) != '/' ? '/' : '');
 
-        $this->compileDestFolder = $this->config['public_folder'].(substr($this->config['public_folder'],-1) != '/' ? '/' : '');
+        $this->webPath = $this->config['web_folder'];
+        $this->bufferFolder = $this->config['buffer_folder'];
+
+        $this->compileDestFolder = $this->config['public_folder'];
     }
 
     /**
@@ -129,7 +130,7 @@ class TlAssetsManager
 
         // Use cache if enable
         if($this->useCache) {
-            $bufferFile = $this->bufferFolder.$this->collection->getName().'.json';
+            $bufferFile = $this->bufferFolder.'/'.$this->bufferFileName;
 
             if(file_exists($bufferFile)) {
                 $this->buffer = @file_get_contents($bufferFile);
@@ -166,7 +167,7 @@ class TlAssetsManager
         }
 
         // Write buffer file
-        $bufferFile = $this->bufferFolder.$this->bufferFileName;
+        $bufferFile = $this->bufferFolder.'/'.$this->bufferFileName;
         if(false === file_put_contents($bufferFile,json_encode($this->buffer))) {
             throw new \Exception('Unable to write buffer file : '.$bufferFile);
         }
@@ -180,7 +181,7 @@ class TlAssetsManager
             if("@" == $input[0]) {
                 $path = $this->webPath.$this->_getWebPathByReference($input);
             } else {
-                $path = $this->webPath.("/" == $input[0] ? substr($input,1,strlen($input) - 1) : $input);
+                $path = $this->webPath.("/" != $input[0] ? '/'.$input : $input);
             }
 
             // Remove "*" if it's the last caractere

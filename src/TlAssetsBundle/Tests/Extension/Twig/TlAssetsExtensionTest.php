@@ -23,4 +23,11 @@ class TlAssetsExtensionTest extends AbstractTest
 
     }
 
+    public function tearDown()
+    {
+        if(file_exists(getcwd().'/src/TlAssetsBundle/Tests/tmp/')) {
+            $this->_remove(getcwd().'/src/TlAssetsBundle/Tests/tmp/');
+        }
+    }
+
 }

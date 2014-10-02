@@ -2,19 +2,17 @@
 
 namespace TlAssetsBundle\Tests;
 
-abstract class AbstractTest extends  \PHPUnit_Framework_TestCase {
+abstract class AbstractTest extends  \PHPUnit_Framework_TestCase
+{
 
-
-    const TEST_FOLDER = './src/TlAssetsBundle/Tests';
-    const TMP_FOLDER = './src/TlAssetsBundle/Tests/tmp';
     protected $config;
 
     public function setUp()
     {
-        $this->config = array('web_folder'=>self::TEST_FOLDER.'/web',
-                            'buffer_folder'=>self::TMP_FOLDER.'/cache',
-                            'node_folder'=>self::TMP_FOLDER.'/node_modules',
-                            'public_folder'=>'/public');
+        $this->config = array('web_folder'=>getcwd().'/src/TlAssetsBundle/Tests/web/',
+                              'buffer_folder'=>getcwd().'/src/TlAssetsBundle/Tests/tmp/cache',
+                              'node_folder'=>getcwd().'/src/TlAssetsBundle/Tests/tmp/node_modules',
+                              'public_folder'=>'/public');
     }
 
     protected function _remove($path)

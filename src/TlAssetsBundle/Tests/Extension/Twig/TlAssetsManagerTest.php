@@ -11,39 +11,39 @@ class TlAssetsManagerTest extends AbstractTest
     public function dataProviderForBuildBuffer() {
         return array(
                 array(
-                    array('/bundles/testbundle/js/'),
+                    array('/bundles/test/js/'),
                     array('filters'=>array()),
                     'js',
-                    array('name'=>'1dea999',
-                          'files'=>array(array('src'=>getcwd().'/src/TlAssetsBundle/Tests/web/bundles/testbundle/js/main.js',
-                                               'dest'=>'/public/js/1dea999_part1_main.js')),
+                    array('name'=>'2010223',
+                          'files'=>array(array('src'=>getcwd().'/src/TlAssetsBundle/Tests/web/bundles/test/js/main.js',
+                                               'dest'=>'/public/js/2010223_part1_main.js')),
                           'type'=>'javascript',
-                          'rootWebPath'=>'./src/TlAssetsBundle/Tests/web/',
+                          'rootWebPath'=>getcwd().'/src/TlAssetsBundle/Tests/web/',
                           'filters'=>array()
                     )
                 ),
                 array(
-                    array('/bundles/testbundle/less/'),
+                    array('/bundles/test/less/'),
                     array('filters'=>array('less')),
                     'style',
-                    array('name'=>'af06088',
-                          'files'=>array(array('src'=>getcwd().'/src/TlAssetsBundle/Tests/web/bundles/testbundle/less/style.less',
-                                               'dest'=>'/public/css/af06088_part1_style.css')),
+                    array('name'=>'feaea60',
+                          'files'=>array(array('src'=>getcwd().'/src/TlAssetsBundle/Tests/web/bundles/test/less/style.less',
+                                               'dest'=>'/public/css/feaea60_part1_style.css')),
                           'type'=>'stylesheet',
-                          'rootWebPath'=>'./src/TlAssetsBundle/Tests/web/',
+                          'rootWebPath'=>getcwd().'/src/TlAssetsBundle/Tests/web/',
                           'filters'=>array('less')
                     )
                 ),
                 array(
-                    array('/bundles/testbundle/less/'),
+                    array('/bundles/test/less/'),
                     array('filters'=>array('less','concat')),
                     'style',
-                    array('name'=>'733207e',
-                        'files'=>array(array('src'=>getcwd().'/src/TlAssetsBundle/Tests/web/bundles/testbundle/less/style.less',
-                                             'dest'=>'/public/css/733207e_part1_style.css')),
+                    array('name'=>'311b5b6',
+                        'files'=>array(array('src'=>getcwd().'/src/TlAssetsBundle/Tests/web/bundles/test/less/style.less',
+                                             'dest'=>'/public/css/311b5b6_part1_style.css')),
                         'type'=>'stylesheet',
-                        'concatDest'=>'/public/css/733207e.css',
-                        'rootWebPath'=>'./src/TlAssetsBundle/Tests/web/',
+                        'concatDest'=>'/public/css/311b5b6.css',
+                        'rootWebPath'=>getcwd().'/src/TlAssetsBundle/Tests/web/',
                         'filters'=>array('less','concat')
                     )
                 )
@@ -67,8 +67,8 @@ class TlAssetsManagerTest extends AbstractTest
 
     public function tearDown()
     {
-        if(file_exists(self::TMP_FOLDER)) {
-            $this->_remove(self::TMP_FOLDER);
+        if(file_exists(getcwd().'/src/TlAssetsBundle/Tests/tmp/')) {
+            $this->_remove(getcwd().'/src/TlAssetsBundle/Tests/tmp/');
         }
     }
 }

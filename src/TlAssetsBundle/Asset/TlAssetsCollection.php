@@ -14,8 +14,8 @@ use TlAssetsBundle\Extension\Twig\TlAssetsExtension;
 
 class TlAssetsCollection
 {
-    const JS_FOLDER = 'js';
-    const CSS_FOLDER = 'css';
+    const JS_FOLDER = '/js';
+    const CSS_FOLDER = '/css';
 
     private $inputs;
     private $attributes;

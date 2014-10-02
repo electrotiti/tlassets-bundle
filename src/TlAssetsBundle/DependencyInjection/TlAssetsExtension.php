@@ -30,8 +30,6 @@ class TlAssetsExtension extends Extension
         $container->setParameter('tl_assets.bundles', $config['bundles']);
         $container->setParameter('tl_assets.use_cache', $config['use_cache']);
         $container->setParameter('tl_assets.variables', $config['variables']);
-        $container->setParameter('tl_assets.config', $config['config']);
-        $container->setParameter('tl_assets.web_folder', $config['config']['web_folder']);
 
         $defaultVal = $config['filters'];
         $filters = array();
@@ -52,5 +50,16 @@ class TlAssetsExtension extends Extension
         }
 
         $container->setParameter('tl_assets.default_filters', $filters);
+
+
+        // Init config array by removing last slash if there
+        $config['config'] = array_map(function($path){
+            return substr($path,-1) == '/' ? substr($path,0,strlen($path)-1) : $path;
+        },$config['config']);
+
+        $container->setParameter('tl_assets.web_folder', $config['config']['web_folder']);
+        $container->setParameter('tl_assets.config', $config['config']);
+
     }
+
 }
