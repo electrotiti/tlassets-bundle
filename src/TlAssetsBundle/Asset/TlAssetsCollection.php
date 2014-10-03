@@ -22,6 +22,7 @@ class TlAssetsCollection
     private $tag;
     private $assets = array();
     private $hash = null;
+    private $buffer = false;
 
     public function __construct($inputs, $attributes, $tag)
     {
@@ -80,25 +81,43 @@ class TlAssetsCollection
 
     public function exportBufferData($rootWebPath, $destFolder)
     {
-        $tagType = array(TlAssetsExtension::TAG_STYLESHEET=>'stylesheet',TlAssetsExtension::TAG_JAVASCRIPT=>'javascript');
+        if($this->buffer == false) {
+            $tagType = array(TlAssetsExtension::TAG_STYLESHEET=>'stylesheet',TlAssetsExtension::TAG_JAVASCRIPT=>'javascript');
 
-        $files = array();
-        foreach($this->assets as $asset) {
-            $files[] = array('src'=>$asset->getRealFilePath(), 'dest'=>$this->_getOutput($destFolder).$asset->getFilename());
+            $files = array();
+            foreach($this->assets as $asset) {
+                $files[] = array('src'=>$asset->getRealFilePath(), 'dest'=>$this->_getOutput($destFolder).$asset->getFilename());
+            }
+
+            $attributes = array('name'=>$this->getName(),
+                                'files'=>$files,
+                                'type'=>$tagType[$this->tag],
+                                'rootWebPath'=>$rootWebPath);
+
+            if(in_array('concat',$this->filters)) {
+                $contactDest = $this->_getOutput($destFolder).$this->getName().($this->generateHash ? '_'.$this->getHash() : '').'.'.$this->_getExtension();
+                $attributes['concatDest'] = $contactDest;
+            }
+
+            $export = array_merge($attributes, $this->attributes);
+            $this->buffer = $export;
         }
+        return $this->buffer;
+    }
 
-        $attributes = array('name'=>$this->getName(),
-                            'files'=>$files,
-                            'type'=>$tagType[$this->tag],
-                            'rootWebPath'=>$rootWebPath);
+    public function getAssetsPathList()
+    {
+        $assetsPath = array();
 
         if(in_array('concat',$this->filters)) {
-            $contactDest = $this->_getOutput($destFolder).$this->getName().($this->generateHash ? '_'.$this->getHash() : '').'.'.$this->_getExtension();
-            $attributes['concatDest'] = $contactDest;
+            $assetsPath[] = $this->buffer['concatDest'];
+        } else {
+            foreach($this->buffer['files'] as $file) {
+                $assetsPath[] =  $file['dest'];
+            }
         }
 
-        $export = array_merge($attributes, $this->attributes);
-        return $export;
+        return $assetsPath;
     }
 
 

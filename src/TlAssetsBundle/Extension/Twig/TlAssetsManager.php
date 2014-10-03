@@ -112,15 +112,7 @@ class TlAssetsManager
      */
     public function getAssetsPath()
     {
-        if($this->buffer == false) {
-            throw new \Exception('No buffer file. Please init manager with load() function before.');
-        }
-
-        $assetsPath = array();
-        foreach($this->buffer['files'] as $file) {
-            $assetsPath[] =  $file['dest'];
-        }
-
+        $assetsPath = $this->collection->getAssetsPathList();
         return $assetsPath;
     }
 

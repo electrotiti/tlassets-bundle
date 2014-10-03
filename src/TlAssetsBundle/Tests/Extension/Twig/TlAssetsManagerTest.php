@@ -24,12 +24,12 @@ class TlAssetsManagerTest extends AbstractTest
                     )
                 ),
                 array(
-                    array('/bundles/test/less/style.less'),
+                    array('/bundles/test/less/style1.less'),
                     array('filters'=>array('less')),
                     'style',
-                    array('name'=>'ef05ca7',
-                          'files'=>array(array('src'=>getcwd().'/src/TlAssetsBundle/Tests/web/bundles/test/less/style.less',
-                                               'dest'=>'/public/css/ef05ca7_part1_style.css')),
+                    array('name'=>'2bb9c62',
+                          'files'=>array(array('src'=>getcwd().'/src/TlAssetsBundle/Tests/web/bundles/test/less/style1.less',
+                                               'dest'=>'/public/css/2bb9c62_part1_style1.css')),
                           'type'=>'stylesheet',
                           'rootWebPath'=>getcwd().'/src/TlAssetsBundle/Tests/web',
                           'filters'=>array('less')
@@ -43,8 +43,8 @@ class TlAssetsManagerTest extends AbstractTest
                         'files'=>array(
                                     array(  'src'=>getcwd().'/src/TlAssetsBundle/Tests/web/bundles/test/less/style2.less',
                                             'dest'=>'/public/css/311b5b6_part1_style2.css'),
-                                    array(  'src'=>getcwd().'/src/TlAssetsBundle/Tests/web/bundles/test/less/style.less',
-                                            'dest'=>'/public/css/311b5b6_part2_style.css'),
+                                    array(  'src'=>getcwd().'/src/TlAssetsBundle/Tests/web/bundles/test/less/style1.less',
+                                            'dest'=>'/public/css/311b5b6_part2_style1.css'),
                                     ),
                         'type'=>'stylesheet',
                         'concatDest'=>'/public/css/311b5b6.css',
