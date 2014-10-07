@@ -86,7 +86,13 @@ class TlAssetsCollection
 
             $files = array();
             foreach($this->assets as $asset) {
-                $files[] = array('src'=>$asset->getRealFilePath(), 'dest'=>$this->_getOutput($destFolder).$asset->getFilename());
+
+                $fileInfos = array('src'=>$asset->getRealFilePath());
+                if(false === in_array('concat',$this->filters)) {
+                    $fileInfos['dest'] = $this->_getOutput($destFolder).$asset->getFilename();
+                }
+
+                $files[] = $fileInfos;
             }
 
             $attributes = array('name'=>$this->getName(),

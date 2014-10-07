@@ -1,11 +1,48 @@
-{% style "@TestBundle/Resources/public/less/style1.less" filter="less" %}
+{% style "@TestBundle/Resources/public/less/01-style.less" filter="less" %}
 <link rel="stylesheet" href="{{ asset_url }}" type="text/css" />
 {% endstyle %}
+
+{% style "/bundles/test/less/01-style.less" filter="less" %}
+<link rel="stylesheet" href="{{ asset_url }}" type="text/css" />
+{% endstyle %}
+
+{% style "@TestBundle/Resources/public/less/" filter="less,concat" %}
+<link rel="stylesheet" href="{{ asset_url }}" type="text/css" />
+{% endstyle %}
+
+{% style "/bundles/test/less/" filter="less,concat" %}
+<link rel="stylesheet" href="{{ asset_url }}" type="text/css" />
+{% endstyle %}
+
+{% style "@TestBundle/Resources/public/less/*" filter="less" %}
+<link rel="stylesheet" href="{{ asset_url }}" type="text/css" />
+{% endstyle %}
+
+{% style "/bundles/test/less/*" filter="less" %}
+<link rel="stylesheet" href="{{ asset_url }}" type="text/css" />
+{% endstyle %}
+
+{% js "@TestBundle/Resources/public/js/01-script.js" %}
+<script type="application/javascript" src="{{ asset_url }}" />
+{% endjs %}
+
+{% js "@TestBundle/Resources/public/js/*" filter="concat" %}
+<script type="application/javascript" src="{{ asset_url }}" />
+{% endjs %}
 
 {% js "@TestBundle/Resources/public/js/" %}
 <script type="application/javascript" src="{{ asset_url }}" />
 {% endjs %}
 
-{% style "@TestBundle/Resources/public/less/" filter="less,concat" %}
-<link rel="stylesheet" href="{{ asset_url }}" type="text/css" />
-{% endstyle %}
+
+{% js "/bundles/test/js/01-script.js" %}
+<script type="application/javascript" src="{{ asset_url }}" />
+{% endjs %}
+
+{% js "/bundles/test/js/*" filter="concat" %}
+<script type="application/javascript" src="{{ asset_url }}" />
+{% endjs %}
+
+{% js "/bundles/test/js/" %}
+<script type="application/javascript" src="{{ asset_url }}" />
+{% endjs %}

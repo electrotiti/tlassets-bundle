@@ -1,3 +1,5 @@
 .idea
 composer.lock
 vendor
+src/TlAssetsBundle/Tests/tmp/
+src/TlAssetsBundle/Tests/node_modules/

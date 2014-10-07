@@ -27,6 +27,10 @@ class TlAssetsTokenParser extends \Twig_TokenParser
                 $stream->next();
                 $stream->expect(\Twig_Token::OPERATOR_TYPE, '=');
                 $attrs['filters'] = array_merge($attrs['filters'], array_filter(array_map('trim', explode(',', $stream->expect(\Twig_Token::STRING_TYPE)->getValue()))));
+            } elseif ($stream->test(\Twig_Token::NAME_TYPE, 'output')) {
+                $stream->next();
+                $stream->expect(\Twig_Token::OPERATOR_TYPE, '=');
+                $attributes['output'] = $stream->expect(\Twig_Token::STRING_TYPE)->getValue();
             }
             else {
                 $token = $stream->getCurrent();

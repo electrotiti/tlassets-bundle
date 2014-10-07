@@ -22,8 +22,5 @@ class TlAssetsExtensionTest extends AbstractTest
         $htmlExpected = file_get_contents(__DIR__.'/../../Ressources/test-expected.html');
         $this->assertEquals($htmlExpected,$html);
 
-        $this->assertFileExists(__DIR__.'/../../tmp/cache/e6c4853.json');
-        $this->assertFileExists(__DIR__.'/../../tmp/cache/527b1cf.json');
-        $this->assertFileExists(__DIR__.'/../../tmp/cache/832439e.json');
     }
 }
